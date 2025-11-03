@@ -33,20 +33,37 @@ export async function main() {
       const psVersion = await checkPowerShellVersion();
       if (psVersion.needsUpdate) {
         displayPowerShellWarning(psVersion.version);
-        upgradePowerShell(); // 顯示升級指引
 
-        const { continueAnyway } = await inquirer.prompt([
+        const { shouldUpgrade } = await inquirer.prompt([
           {
             type: 'confirm',
-            name: 'continueAnyway',
-            message: '是否已完成 PowerShell 升級，或要繼續安裝（某些功能可能無法正常運作）？',
-            default: false
+            name: 'shouldUpgrade',
+            message: '是否要自動升級 PowerShell？',
+            default: true
           }
         ]);
 
-        if (!continueAnyway) {
-          console.log(chalk.yellow('\n請升級 PowerShell 後重新執行 prespec。\n'));
-          process.exit(0);
+        if (shouldUpgrade) {
+          const success = await upgradePowerShell();
+          if (success) {
+            console.log(chalk.yellow('升級完成！請重新執行 prespec 以繼續安裝。\n'));
+            process.exit(0);
+          } else {
+            console.log(chalk.yellow('\n自動升級失敗。'));
+            const { continueAnyway } = await inquirer.prompt([
+              {
+                type: 'confirm',
+                name: 'continueAnyway',
+                message: '是否要繼續安裝（某些功能可能無法正常運作）？',
+                default: false
+              }
+            ]);
+
+            if (!continueAnyway) {
+              console.log(chalk.yellow('\n安裝已取消。請手動升級 PowerShell 後重新執行 prespec。\n'));
+              process.exit(0);
+            }
+          }
         } else {
           console.log(chalk.yellow('\n⚠️  提醒：GitHub Copilot CLI 在 Windows 上需要 PowerShell 6+ 才能正常運作。\n'));
         }

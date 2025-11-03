@@ -3,23 +3,61 @@ import ora from 'ora';
 import chalk from 'chalk';
 
 /**
- * 提供 PowerShell 升級指引（不自動安裝，避免系統衝突）
+ * 升級 PowerShell 到最新版本
  * @returns {Promise<boolean>}
  */
 export async function upgradePowerShell() {
-  console.log(chalk.bold.yellow('\n⚠️  需要手動升級 PowerShell\n'));
+  const spinner = ora('正在升級 PowerShell...').start();
 
-  console.log(chalk.white('為避免系統衝突和錯誤，建議您手動升級 PowerShell。'));
-  console.log(chalk.white('這只需要幾分鐘的時間。\n'));
+  try {
+    // 使用 MSI 安裝 PowerShell
+    spinner.text = '正在下載 PowerShell 安裝檔...';
 
-  displayManualUpgradeInstructions();
+    // 使用 PowerShell 下載最新版本的 MSI
+    const downloadScript = `
+      $ProgressPreference = 'SilentlyContinue'
+      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
+      $msiAsset = $latestRelease.assets | Where-Object { $_.name -like '*-win-x64.msi' } | Select-Object -First 1
+      $downloadUrl = $msiAsset.browser_download_url
+      $outputPath = "$env:TEMP\\PowerShell-Latest.msi"
+      Invoke-WebRequest -Uri $downloadUrl -OutFile $outputPath
+      Write-Output $outputPath
+    `;
 
-  console.log(chalk.cyan('\n升級完成後，請：'));
-  console.log(chalk.white('1. 關閉所有 PowerShell 視窗'));
-  console.log(chalk.white('2. 開啟新的 PowerShell 7'));
-  console.log(chalk.white('3. 重新執行 prespec\n'));
+    const { stdout: msiPath } = await execa('powershell', ['-Command', downloadScript]);
 
-  return false;
+    spinner.text = '正在安裝 PowerShell...（這可能需要幾分鐘）';
+
+    // 安裝 MSI（靜默安裝）
+    await execa('msiexec', [
+      '/i',
+      msiPath.trim(),
+      '/qn',
+      '/norestart',
+      'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1',
+      'ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1'
+    ], {
+      stdio: 'inherit'
+    });
+
+    spinner.succeed(chalk.green('✓ PowerShell 升級成功！'));
+
+    console.log(chalk.yellow('\n⚠️  重要提示：'));
+    console.log(chalk.white('請關閉目前的 PowerShell 視窗，並開啟新的 PowerShell 7 視窗'));
+    console.log(chalk.dim('然後重新執行 prespec 完成安裝\n'));
+
+    return true;
+
+  } catch (error) {
+    spinner.fail(chalk.red('✗ PowerShell 升級失敗'));
+    console.error(chalk.red(`錯誤：${error.message}`));
+
+    // 提供手動安裝方法
+    console.log(chalk.yellow('\n自動安裝失敗，請嘗試手動安裝：\n'));
+    displayManualUpgradeInstructions();
+
+    return false;
+  }
 }
 
 
