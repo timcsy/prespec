@@ -39,7 +39,8 @@ prespec/
 │       ├── git.js          # Git 配置
 │       ├── copilot.js      # GitHub Copilot CLI 安裝
 │       ├── uv.js           # UV 安裝
-│       └── speckit.js      # Spec Kit 安裝
+│       ├── speckit.js      # Spec Kit 安裝
+│       └── powershell.js   # PowerShell 升級（Windows）
 ├── package.json            # npm 套件設定
 ├── README.md               # 使用者文件
 ├── LICENSE                 # MIT 授權
@@ -54,17 +55,20 @@ prespec/
 
 ```javascript
 1. 顯示歡迎訊息
-2. 檢查所有工具的安裝狀態
-3. 顯示檢查結果
-4. 詢問使用者是否繼續
-5. 依序執行安裝流程：
+2. Windows 平台：檢查 PowerShell 版本
+   - 如果低於版本 6，提示升級
+   - 可選擇自動升級或繼續安裝
+3. 檢查所有工具的安裝狀態
+4. 顯示檢查結果
+5. 詢問使用者是否繼續
+6. 依序執行安裝流程：
    - NVM（詢問是否安裝）
    - Node.js（選擇版本）
    - Git（設定使用者資訊）
    - GitHub Copilot CLI
    - UV
    - Spec Kit
-6. 顯示完成訊息和後續步驟
+7. 顯示完成訊息和後續步驟
 ```
 
 #### 2. `src/utils/platform.js` - 平台檢測
@@ -75,6 +79,7 @@ prespec/
 - `getShellType()` - 偵測 Shell 類型（bash/zsh/fish/PowerShell）
 - `getShellConfigPath()` - 取得 Shell 設定檔路徑
 - `isUnixLike()` / `isWindows()` - 平台判斷輔助函式
+- `checkPowerShellVersion()` - 檢查 PowerShell 版本（Windows 專用）
 
 #### 3. `src/utils/check.js` - 工具檢查
 
@@ -128,6 +133,12 @@ prespec/
   - 指令名稱為 `specify`（不是 `spec`）
   - 顯示規格驅動開發的使用說明
   - 說明在 AI 助手中使用 `/speckit.*` 指令
+
+- **powershell.js**（Windows 專用）：
+  - 檢查 PowerShell 版本是否低於 6
+  - 使用 winget 自動升級到 PowerShell 7
+  - 提供多種手動升級方式（winget、MSI、Chocolatey）
+  - GitHub Copilot CLI 在 Windows 需要 PowerShell 6+ 才能運作
 
 ## 設計決策
 

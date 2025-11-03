@@ -1,5 +1,6 @@
 import chalk from 'chalk';
-import { getPlatformName } from './utils/platform.js';
+import inquirer from 'inquirer';
+import { getPlatformName, checkPowerShellVersion, isWindows } from './utils/platform.js';
 import { checkAllTools } from './utils/check.js';
 import {
   displayCheckResults,
@@ -13,6 +14,7 @@ import { configureGit, installGitIfNeeded } from './installers/git.js';
 import { installCopilot } from './installers/copilot.js';
 import { installUv } from './installers/uv.js';
 import { installSpecKit } from './installers/speckit.js';
+import { upgradePowerShell, displayPowerShellWarning } from './installers/powershell.js';
 
 /**
  * 主程式
@@ -25,6 +27,48 @@ export async function main() {
     console.log(chalk.bold.cyan('╚════════════════════════════════════════╝\n'));
 
     console.log(chalk.dim(`平台：${getPlatformName()}\n`));
+
+    // Windows: 檢查 PowerShell 版本
+    if (isWindows()) {
+      const psVersion = await checkPowerShellVersion();
+      if (psVersion.needsUpdate) {
+        displayPowerShellWarning(psVersion.version);
+
+        const { shouldUpgrade } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'shouldUpgrade',
+            message: '是否要現在升級 PowerShell？',
+            default: true
+          }
+        ]);
+
+        if (shouldUpgrade) {
+          const success = await upgradePowerShell();
+          if (success) {
+            console.log(chalk.yellow('請重新執行 prespec 以繼續安裝。\n'));
+            process.exit(0);
+          } else {
+            console.log(chalk.yellow('\n您可以稍後手動升級 PowerShell，然後重新執行 prespec。'));
+            const { continueAnyway } = await inquirer.prompt([
+              {
+                type: 'confirm',
+                name: 'continueAnyway',
+                message: '是否要繼續安裝（某些功能可能無法正常運作）？',
+                default: false
+              }
+            ]);
+
+            if (!continueAnyway) {
+              console.log(chalk.yellow('\n安裝已取消。\n'));
+              process.exit(0);
+            }
+          }
+        } else {
+          console.log(chalk.yellow('\n提醒：GitHub Copilot CLI 在 Windows 上需要 PowerShell 6+ 才能正常運作。\n'));
+        }
+      }
+    }
 
     // 檢查所有工具
     console.log(chalk.yellow('正在檢查已安裝的工具...\n'));

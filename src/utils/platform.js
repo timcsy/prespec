@@ -101,3 +101,25 @@ export function getShellConfigPath() {
 
   return configPaths[shell] || configPaths.bash;
 }
+
+/**
+ * 檢查 PowerShell 版本（僅 Windows）
+ * @returns {Promise<{version: number|null, needsUpdate: boolean}>}
+ */
+export async function checkPowerShellVersion() {
+  if (!isWindows()) {
+    return { version: null, needsUpdate: false };
+  }
+
+  try {
+    const { stdout } = await execa('powershell', ['-Command', '$PSVersionTable.PSVersion.Major']);
+    const version = parseInt(stdout.trim(), 10);
+    return {
+      version,
+      needsUpdate: version < 6
+    };
+  } catch (error) {
+    // 無法取得版本，假設需要更新
+    return { version: null, needsUpdate: true };
+  }
+}
