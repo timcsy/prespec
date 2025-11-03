@@ -76,25 +76,44 @@ export async function installNodeViaNvm(version = 'lts') {
   const spinner = ora(`正在透過 NVM 安裝 Node.js ${version === 'lts' ? 'LTS' : version}...`).start();
 
   try {
-    const home = os.homedir();
-    const nvmScript = `${home}/.nvm/nvm.sh`;
+    if (isWindows()) {
+      // Windows: 使用 nvm-windows 指令
+      const versionArg = version === 'lts' ? 'lts' : version;
 
-    // 準備安裝指令
-    const versionArg = version === 'lts' ? '--lts' : version;
-    const installCommand = `source ${nvmScript} && nvm install ${versionArg} && nvm use ${versionArg}`;
+      // 安裝指定版本
+      await execa('nvm', ['install', versionArg], {
+        stdio: 'inherit'
+      });
 
-    await execa('bash', ['-c', installCommand], {
-      stdio: 'inherit'
-    });
+      // 使用該版本
+      await execa('nvm', ['use', versionArg], {
+        stdio: 'inherit'
+      });
 
-    spinner.succeed(chalk.green(`✓ Node.js ${version === 'lts' ? 'LTS' : version} 安裝成功！`));
-    return true;
+      spinner.succeed(chalk.green(`✓ Node.js ${version === 'lts' ? 'LTS' : version} 安裝成功！`));
+      return true;
+    } else {
+      // Unix-like: 使用 nvm.sh
+      const home = os.homedir();
+      const nvmScript = `${home}/.nvm/nvm.sh`;
+
+      // 準備安裝指令
+      const versionArg = version === 'lts' ? '--lts' : version;
+      const installCommand = `source ${nvmScript} && nvm install ${versionArg} && nvm use ${versionArg}`;
+
+      await execa('bash', ['-c', installCommand], {
+        stdio: 'inherit'
+      });
+
+      spinner.succeed(chalk.green(`✓ Node.js ${version === 'lts' ? 'LTS' : version} 安裝成功！`));
+      return true;
+    }
   } catch (error) {
     spinner.fail(chalk.red('✗ Node.js 安裝失敗'));
     console.error(chalk.red(`錯誤：${error.message}`));
 
     if (isWindows()) {
-      console.log(chalk.yellow('\nWindows 使用者請在安裝 nvm-windows 後，執行：'));
+      console.log(chalk.yellow('\n請手動執行以下指令：'));
       console.log(chalk.cyan(`  nvm install ${version === 'lts' ? 'lts' : version}`));
       console.log(chalk.cyan(`  nvm use ${version === 'lts' ? 'lts' : version}`));
     }

@@ -100,13 +100,36 @@ export async function main() {
         const nvmSuccess = await installNvm();
 
         if (nvmSuccess) {
-          // 詢問 Node.js 版本
-          const nodeVersion = await askNodeVersion();
-          await installNodeViaNvm(nodeVersion);
+          if (isWindows()) {
+            // Windows: nvm 安裝後需要重新開啟 PowerShell
+            console.log(chalk.cyan('\n請重新開啟 PowerShell 並執行 prespec，然後選擇 Node.js 版本進行安裝。\n'));
+            process.exit(0);
+          } else {
+            // Unix-like: 可以在同一個 session 中安裝 Node.js
+            const nodeVersion = await askNodeVersion();
+            await installNodeViaNvm(nodeVersion);
+          }
         }
       }
     } else {
       console.log(chalk.blue('⏭  NVM 已安裝，跳過\n'));
+
+      // 如果 NVM 已安裝但 Node.js 未安裝，詢問是否安裝 Node.js
+      if (!tools.node.installed) {
+        const { shouldInstallNode } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'shouldInstallNode',
+            message: '是否要透過 NVM 安裝 Node.js？',
+            default: true
+          }
+        ]);
+
+        if (shouldInstallNode) {
+          const nodeVersion = await askNodeVersion();
+          await installNodeViaNvm(nodeVersion);
+        }
+      }
     }
 
     // 2. Git 設定
