@@ -230,13 +230,8 @@ export async function main() {
     // 4. UV
     if (!tools.uv.installed) {
       console.log(chalk.cyan('\n正在安裝 UV...'));
-      const uvInstalled = await installUv();
-
-      if (uvInstalled) {
-        // UV 安裝後需要重新開啟終端機
-        console.log(chalk.cyan('\n※ 安裝訊息已顯示，請依照指示重新開啟終端機並執行 npx prespec\n'));
-        process.exit(0);
-      }
+      await installUv();
+      // UV 安裝後已經更新當前 session 的 PATH，可以繼續安裝 Spec Kit
     } else {
       console.log(chalk.blue('⏭  UV 已安裝，跳過\n'));
     }

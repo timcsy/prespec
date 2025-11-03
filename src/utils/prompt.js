@@ -185,7 +185,14 @@ export function displayCheckResults(tools) {
 
   items.forEach(item => {
     const status = item.getStatus(item.data);
-    const installed = item.data.installed;
+    // AI CLI 工具需要特別處理，檢查是否有任何一個已安裝
+    let installed = item.data.installed;
+    if (item.name === 'AI CLI 工具') {
+      installed = item.data.copilot?.installed ||
+                  item.data.claudeCode?.installed ||
+                  item.data.geminiCli?.installed ||
+                  item.data.codexCli?.installed;
+    }
     const color = installed ? chalk.green : chalk.red;
     console.log(`  ${color(item.name.padEnd(25))} ${status}`);
   });
