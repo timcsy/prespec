@@ -46,6 +46,8 @@ export async function installNvm() {
       console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
       console.log(chalk.dim('\n然後將繼續安裝 Node.js\n'));
 
+      displayNvmUsageInfo();
+
       return true;
     } else {
       // macOS / Linux / WSL: 使用官方安裝腳本
@@ -61,6 +63,8 @@ export async function installNvm() {
       console.log(chalk.cyan('\n請執行以下指令來載入 NVM：'));
       console.log(chalk.yellow('  source ~/.nvm/nvm.sh'));
       console.log(chalk.dim('或重新開啟終端機視窗\n'));
+
+      displayNvmUsageInfo();
 
       return true;
     }
@@ -124,4 +128,25 @@ export async function installNodeViaNvm(version = 'lts') {
 
     return false;
   }
+}
+
+/**
+ * 顯示 NVM 使用說明
+ */
+function displayNvmUsageInfo() {
+  console.log(chalk.bold.cyan('📖 NVM 使用說明：\n'));
+
+  console.log(chalk.white('如果您已有其他方式安裝的 Node.js：'));
+  console.log(chalk.cyan('  • NVM 和現有的 Node.js 可以共存'));
+  console.log(chalk.cyan('  • 使用 nvm use <version> 切換到 NVM 管理的版本'));
+  console.log(chalk.cyan('  • 如果沒有執行 nvm use，系統會使用原本的 Node.js'));
+  console.log(chalk.dim('  • 兩個版本的全域 packages 是獨立的\n'));
+
+  console.log(chalk.white('常用指令：'));
+  console.log(chalk.yellow('  nvm install lts         - 安裝最新 LTS 版本'));
+  console.log(chalk.yellow('  nvm install <version>   - 安裝指定版本'));
+  console.log(chalk.yellow('  nvm use <version>       - 切換到指定版本'));
+  console.log(chalk.yellow('  nvm list                - 列出已安裝的版本'));
+  console.log(chalk.yellow('  nvm current             - 顯示目前使用的版本'));
+  console.log();
 }

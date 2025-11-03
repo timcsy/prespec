@@ -117,9 +117,8 @@ export async function main() {
     } else {
       console.log(chalk.blue('⏭  NVM 已安裝，跳過\n'));
 
-      // 檢查 Node.js 狀態
+      // 如果沒有安裝 Node.js，詢問是否透過 NVM 安裝
       if (!tools.node.installed) {
-        // 沒有安裝 Node.js，詢問是否透過 NVM 安裝
         const { shouldInstallNode } = await inquirer.prompt([
           {
             type: 'confirm',
@@ -133,81 +132,8 @@ export async function main() {
           const nodeVersion = await askNodeVersion();
           await installNodeViaNvm(nodeVersion);
         }
-      } else {
-        // 已安裝 Node.js，詢問是否要透過 NVM 管理
-        console.log(chalk.yellow(`\n⚠️  偵測到系統已安裝 Node.js ${tools.node.version}`));
-        console.log(chalk.white('但可能不是透過 NVM 安裝的。\n'));
-
-        const { nodeStrategy } = await inquirer.prompt([
-          {
-            type: 'list',
-            name: 'nodeStrategy',
-            message: '請選擇處理方式：',
-            choices: [
-              {
-                name: '保持現狀（繼續使用現有的 Node.js）',
-                value: 'keep'
-              },
-              {
-                name: '與 NVM 共存（安裝 NVM 管理的 Node.js，保留現有版本作為備用）',
-                value: 'coexist'
-              },
-              {
-                name: '完全遷移到 NVM（需要先移除現有 Node.js）',
-                value: 'migrate'
-              }
-            ],
-            default: 'coexist'
-          }
-        ]);
-
-        if (nodeStrategy === 'coexist') {
-          console.log(chalk.cyan('\n💡 共存模式說明：'));
-          console.log(chalk.white('- NVM 會安裝新的 Node.js 版本'));
-          console.log(chalk.white('- 使用 nvm use <version> 切換到 NVM 管理的版本'));
-          console.log(chalk.white('- 如果沒有執行 nvm use，系統會使用原本的 Node.js'));
-          console.log(chalk.white('- 兩個版本的全域 packages 是獨立的\n'));
-
-          const { confirmCoexist } = await inquirer.prompt([
-            {
-              type: 'confirm',
-              name: 'confirmCoexist',
-              message: '是否要透過 NVM 安裝新的 Node.js 版本？',
-              default: true
-            }
-          ]);
-
-          if (confirmCoexist) {
-            const nodeVersion = await askNodeVersion();
-            await installNodeViaNvm(nodeVersion);
-          }
-        } else if (nodeStrategy === 'migrate') {
-          console.log(chalk.red('\n⚠️  重要警告：'));
-          console.log(chalk.white('移除現有的 Node.js 會導致所有全域安裝的 npm packages 消失！\n'));
-
-          console.log(chalk.cyan('建議步驟：'));
-          console.log(chalk.white('  1. 先備份全域 packages 清單：'));
-          console.log(chalk.yellow('     npm list -g --depth=0 > npm-global-packages.txt'));
-          console.log(chalk.white('  2. 移除現有的 Node.js'));
-          console.log(chalk.white('  3. 透過 NVM 重新安裝 Node.js'));
-          console.log(chalk.white('  4. 重新安裝需要的全域 packages\n'));
-
-          const { proceedWithMigrate } = await inquirer.prompt([
-            {
-              type: 'confirm',
-              name: 'proceedWithMigrate',
-              message: '已備份並移除現有 Node.js，現在要透過 NVM 安裝嗎？',
-              default: false
-            }
-          ]);
-
-          if (proceedWithMigrate) {
-            const nodeVersion = await askNodeVersion();
-            await installNodeViaNvm(nodeVersion);
-          }
-        }
-        // nodeStrategy === 'keep' 的情況下什麼都不做
       }
+      // 如果已有 Node.js，不管是不是透過 NVM 安裝的，都不再詢問
     }
 
     // 2. Git 設定
