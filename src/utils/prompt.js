@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import os from 'os';
 
 /**
  * 詢問是否繼續安裝
@@ -86,12 +87,16 @@ export async function askNodeVersion() {
 export async function askGitUserInfo(currentName = null, currentEmail = null) {
   console.log(chalk.cyan('\n請設定 Git 使用者資訊：'));
 
+  // 如果沒有現有的值，提供預設值
+  const defaultName = currentName || os.userInfo().username || '';
+  const defaultEmail = currentEmail || `${os.userInfo().username}@example.com` || '';
+
   const answers = await inquirer.prompt([
     {
       type: 'input',
       name: 'name',
       message: 'Git 使用者名稱：',
-      default: currentName || undefined,
+      default: defaultName,
       validate: (input) => {
         if (!input.trim()) {
           return '使用者名稱不可為空';
@@ -103,7 +108,7 @@ export async function askGitUserInfo(currentName = null, currentEmail = null) {
       type: 'input',
       name: 'email',
       message: 'Git Email：',
-      default: currentEmail || undefined,
+      default: defaultEmail,
       validate: (input) => {
         if (!input.trim()) {
           return 'Email 不可為空';
