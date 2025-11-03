@@ -138,8 +138,8 @@ export async function checkGit() {
  * @returns {Promise<{installed: boolean, version: string|null}>}
  */
 export async function checkCopilot() {
-  const installed = await commandExists('github-copilot-cli');
-  const version = installed ? await getCommandVersion('github-copilot-cli') : null;
+  const installed = await commandExists('copilot');
+  const version = installed ? await getCommandVersion('copilot') : null;
 
   return { installed, version };
 }
