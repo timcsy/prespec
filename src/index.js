@@ -335,6 +335,22 @@ function displayNextSteps(tools) {
     console.log(chalk.dim(`   ${cmd}`));
   });
   console.log();
+  stepNumber++;
+
+  // VSCode 建議
+  if (!tools.vscode?.installed) {
+    console.log(chalk.bold.yellow(`${stepNumber}. 建議安裝 VSCode：\n`));
+    console.log(chalk.white('   VSCode 是強大的程式碼編輯器，搭配 AI CLI 工具使用更便利'));
+    console.log(chalk.cyan('   下載位置：https://code.visualstudio.com/\n'));
+
+    console.log(chalk.white('   建議安裝的 VSCode 擴充套件：'));
+    console.log(chalk.dim('   • GitHub Copilot - AI 程式輔助'));
+    console.log(chalk.dim('   • Python - Python 開發'));
+    console.log(chalk.dim('   • ESLint - JavaScript/TypeScript 語法檢查'));
+    console.log(chalk.dim('   • Prettier - 程式碼格式化\n'));
+
+    stepNumber++;
+  }
 
   console.log(chalk.cyan('享受您的開發環境！ 🚀\n'));
 }

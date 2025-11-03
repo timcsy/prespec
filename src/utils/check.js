@@ -200,11 +200,23 @@ export async function checkCodexCli() {
 }
 
 /**
+ * 檢查 VSCode 是否已安裝
+ * @returns {Promise<{installed: boolean, version: string|null}>}
+ */
+export async function checkVSCode() {
+  // 檢查 code 指令（VSCode CLI）
+  const installed = await commandExists('code');
+  const version = installed ? await getCommandVersion('code') : null;
+
+  return { installed, version };
+}
+
+/**
  * 檢查所有工具的安裝狀態
  * @returns {Promise<Object>}
  */
 export async function checkAllTools() {
-  const [nvm, node, git, copilot, uv, speckit, claudeCode, geminiCli, codexCli] = await Promise.all([
+  const [nvm, node, git, copilot, uv, speckit, claudeCode, geminiCli, codexCli, vscode] = await Promise.all([
     checkNvm(),
     checkNode(),
     checkGit(),
@@ -213,7 +225,8 @@ export async function checkAllTools() {
     checkSpecKit(),
     checkClaudeCode(),
     checkGeminiCli(),
-    checkCodexCli()
+    checkCodexCli(),
+    checkVSCode()
   ]);
 
   return {
@@ -225,6 +238,7 @@ export async function checkAllTools() {
     speckit,
     claudeCode,
     geminiCli,
-    codexCli
+    codexCli,
+    vscode
   };
 }
