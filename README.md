@@ -19,7 +19,7 @@
 - **Git** - 版本控制系統（含使用者設定）
 - **GitHub Copilot CLI** - AI 程式設計助手命令列工具
 - **UV** - 快速的 Python 套件管理器（自動管理 Python 版本）
-- **Spec Kit** - GitHub 的規格撰寫工具
+- **Spec Kit** - GitHub 的規格驅動開發工具（Specify CLI）
 
 ## 使用方式
 
@@ -81,20 +81,27 @@ source ~/.nvm/nvm.sh
 
 ### GitHub Copilot CLI 使用
 
-首次使用 GitHub Copilot CLI 時：
+GitHub Copilot CLI 的使用方式：
 
-1. 在終端機中輸入任何問題，系統會自動引導您進行認證
-2. **重要**：使用 `/model` 指令切換 AI 模型
+1. **啟動 Copilot CLI**：
+   ```bash
+   copilot
+   ```
 
-```bash
-# 切換模型（建議使用 Claude Haiku 4.5）
-/model claude-haiku-4.5
+2. **首次使用需要登入**：
+   ```bash
+   /login
+   ```
 
-# 其他常用指令
-/help    # 顯示所有指令
-/clear   # 清除對話歷史
-/exit    # 退出
-```
+3. **基本使用**：直接用自然語言描述您的需求，Copilot 會協助編碼、除錯和理解程式碼
+
+4. **其他指令**：
+   ```bash
+   /model <模型名稱>  # 切換 AI 模型（預設為 Claude Sonnet 4.5）
+   /feedback          # 提交意見回饋
+   ```
+
+**系統需求**：Node.js v22+、npm v10+、有效的 GitHub Copilot 訂閱
 
 ### 驗證安裝
 
@@ -103,9 +110,9 @@ source ~/.nvm/nvm.sh
 ```bash
 node --version
 git --version
-github-copilot-cli --version
+copilot --version
 uv --version
-spec --version
+specify --version
 ```
 
 ## 常見問題

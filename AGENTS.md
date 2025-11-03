@@ -18,9 +18,9 @@
 1. **NVM** (Node Version Manager) - 可選安裝
 2. **Node.js** - 透過 NVM 安裝，支援 LTS 或自訂版本
 3. **Git** - 包含使用者資訊設定
-4. **GitHub Copilot CLI** (`@github/copilot`) - AI 程式設計助手
+4. **GitHub Copilot CLI** (`@github/copilot`) - AI 程式設計助手（需要 Node.js v22+、npm v10+、有效的 Copilot 訂閱）
 5. **UV** - Python 套件管理器（會自動管理 Python）
-6. **Spec Kit** - GitHub 的規格撰寫工具
+6. **Spec Kit** (Specify CLI) - GitHub 的規格驅動開發工具（透過 uv 從 Git 安裝）
 
 ## 專案架構
 
@@ -114,7 +114,9 @@ prespec/
 - **copilot.js**：
   - 使用 `npm install -g @github/copilot` 安裝
   - 安裝後顯示詳細使用說明
-  - 建議使用 Claude Haiku 4.5 模型
+  - 說明啟動方式（`copilot` 指令）
+  - 說明首次登入方式（`/login` 指令）
+  - 預設使用 Claude Sonnet 4.5 模型
 
 - **uv.js**：
   - Windows 使用 PowerShell 安裝腳本
@@ -122,8 +124,10 @@ prespec/
   - UV 會自動管理 Python 版本
 
 - **speckit.js**：
-  - Windows 使用 PowerShell 安裝腳本
-  - Unix-like 使用 bash 安裝腳本
+  - 使用 `uv tool install specify-cli --from git+https://github.com/github/spec-kit.git` 安裝
+  - 指令名稱為 `specify`（不是 `spec`）
+  - 顯示規格驅動開發的使用說明
+  - 說明在 AI 助手中使用 `/speckit.*` 指令
 
 ## 設計決策
 
@@ -151,16 +155,27 @@ prespec/
 - 給予使用者選擇的彈性（如是否安裝 NVM）
 - 提升使用者體驗
 
-### 3. 為什麼建議使用 Claude Haiku 4.5？
+### 3. GitHub Copilot CLI 的使用說明
 
-**決策**：在 GitHub Copilot CLI 安裝說明中建議使用 `claude-haiku-4.5`
+**決策**：提供正確的 GitHub Copilot CLI 使用說明
+
+**重點**：
+- 啟動指令：`copilot`（不是直接輸入問題）
+- 首次使用需要 `/login` 登入
+- 預設模型為 Claude Sonnet 4.5（公開預覽版本）
+- 需要 Node.js v22+、npm v10+ 和有效的 GitHub Copilot 訂閱
+
+### 4. Spec Kit 安裝方式
+
+**決策**：使用 `uv tool install` 從 Git 安裝
 
 **原因**：
-- 快速且經濟
-- 適合命令列的快速互動
-- 使用者明確要求
+- Spec Kit 沒有提供獨立的安裝腳本
+- 需要透過 uv 從 Git 倉庫安裝
+- 指令名稱為 `specify`（不是 `spec`）
+- 這是 GitHub 官方推薦的安裝方式
 
-### 4. 平台支援策略
+### 5. 平台支援策略
 
 **決策**：完整支援 macOS、Linux、Windows（含 WSL）
 

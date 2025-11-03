@@ -128,12 +128,12 @@ export async function checkUv() {
 }
 
 /**
- * 檢查 Spec Kit 是否已安裝
+ * 檢查 Spec Kit (Specify CLI) 是否已安裝
  * @returns {Promise<{installed: boolean, version: string|null}>}
  */
 export async function checkSpecKit() {
-  const installed = await commandExists('spec');
-  const version = installed ? await getCommandVersion('spec') : null;
+  const installed = await commandExists('specify');
+  const version = installed ? await getCommandVersion('specify') : null;
 
   return { installed, version };
 }
