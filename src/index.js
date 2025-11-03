@@ -145,13 +145,21 @@ export async function main() {
         ]);
 
         if (useNvmInstead) {
-          console.log(chalk.cyan('\n提示：請先手動移除現有的 Node.js，然後透過 NVM 重新安裝。\n'));
+          console.log(chalk.red('\n⚠️  重要警告：'));
+          console.log(chalk.white('移除現有的 Node.js 會導致所有全域安裝的 npm packages 消失！\n'));
+
+          console.log(chalk.cyan('建議步驟：'));
+          console.log(chalk.white('  1. 先備份全域 packages 清單：'));
+          console.log(chalk.yellow('     npm list -g --depth=0 > npm-global-packages.txt'));
+          console.log(chalk.white('  2. 移除現有的 Node.js'));
+          console.log(chalk.white('  3. 透過 NVM 重新安裝 Node.js'));
+          console.log(chalk.white('  4. 重新安裝需要的全域 packages\n'));
 
           const { proceedWithNvm } = await inquirer.prompt([
             {
               type: 'confirm',
               name: 'proceedWithNvm',
-              message: '已移除現有 Node.js，現在要透過 NVM 安裝嗎？',
+              message: '已備份並移除現有 Node.js，現在要透過 NVM 安裝嗎？',
               default: false
             }
           ]);
