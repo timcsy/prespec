@@ -1,0 +1,56 @@
+{
+  "name": "prespec",
+  "version": "1.0.0",
+  "description": "跨平台開發環境快速安裝工具 - 一鍵安裝 Node.js、Git、GitHub Copilot CLI、UV 和 Spec Kit",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "prespec": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "installer",
+    "setup",
+    "development",
+    "environment",
+    "dev-tools",
+    "nvm",
+    "nodejs",
+    "git",
+    "github-copilot",
+    "copilot",
+    "uv",
+    "spec-kit",
+    "cross-platform",
+    "cli",
+    "tool"
+  ],
+  "author": "timcsy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timcsy/prespec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/timcsy/prespec/issues"
+  },
+  "homepage": "https://github.com/timcsy/prespec#readme",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "execa": "^8.0.1",
+    "inquirer": "^9.2.12",
+    "ora": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ]
+}
