@@ -17,6 +17,7 @@ import { installSpecKit } from './installers/speckit.js';
 import { installClaudeCode } from './installers/claude-code.js';
 import { installGeminiCli } from './installers/gemini-cli.js';
 import { installCodexCli } from './installers/codex-cli.js';
+import { installVSCode } from './installers/vscode.js';
 import { upgradePowerShell, displayPowerShellWarning } from './installers/powershell.js';
 
 /**
@@ -246,6 +247,27 @@ export async function main() {
       await installSpecKit();
     } else {
       console.log(chalk.blue('⏭  Spec Kit 已安裝，跳過\n'));
+    }
+
+    // 6. VSCode
+    if (!tools.vscode.installed) {
+      console.log(chalk.cyan('\n═══ VSCode 安裝建議 ═══\n'));
+      console.log(chalk.white('VSCode 是強大的程式碼編輯器，搭配 AI CLI 工具使用更便利\n'));
+
+      const { shouldInstallVSCode } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'shouldInstallVSCode',
+          message: '是否要安裝 VSCode？',
+          default: true
+        }
+      ]);
+
+      if (shouldInstallVSCode) {
+        await installVSCode();
+      }
+    } else {
+      console.log(chalk.blue('⏭  VSCode 已安裝，跳過\n'));
     }
 
     // 完成訊息
