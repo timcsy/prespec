@@ -305,34 +305,33 @@ function displayNextSteps(tools) {
   if (installedAiTools.length > 0) {
     console.log(chalk.bold.yellow(`${stepNumber}. AI CLI 工具快速開始：\n`));
 
-    // GitHub Copilot CLI 特別提醒
+    // GitHub Copilot CLI
     if (tools.copilot?.installed) {
       console.log(chalk.white('   📌 GitHub Copilot CLI：'));
-      console.log(chalk.cyan('      啟動：copilot'));
-      console.log(chalk.yellow('      首次使用需要登入：/login'));
-      console.log(chalk.yellow('      建議選擇 Haiku 模型（更快速且省 token）：/model'));
-      console.log(chalk.dim('      （用方向鍵選擇 Haiku）\n'));
+      console.log(chalk.cyan('      啟動：') + chalk.yellow('copilot'));
+      console.log(chalk.white('      首次使用：') + chalk.yellow('/login') + chalk.dim(' 登入 GitHub'));
+      console.log(chalk.white('      建議設定：') + chalk.yellow('/model') + chalk.dim(' 選擇 Haiku（更快速且省 token）\n'));
     }
 
     // Claude Code CLI
     if (tools.claudeCode?.installed) {
       console.log(chalk.white('   📌 Claude Code CLI：'));
-      console.log(chalk.cyan('      啟動：claude'));
-      console.log(chalk.dim('      需要登入您的 Anthropic 帳號\n'));
+      console.log(chalk.cyan('      啟動：') + chalk.yellow('claude'));
+      console.log(chalk.dim('      需登入 Anthropic 帳號\n'));
     }
 
     // Gemini CLI
     if (tools.geminiCli?.installed) {
       console.log(chalk.white('   📌 Gemini CLI：'));
-      console.log(chalk.cyan('      啟動：gemini'));
-      console.log(chalk.dim('      需要用 Google 帳號認證\n'));
+      console.log(chalk.cyan('      啟動：') + chalk.yellow('gemini'));
+      console.log(chalk.dim('      需用 Google 帳號認證\n'));
     }
 
     // Codex CLI
     if (tools.codexCli?.installed) {
       console.log(chalk.white('   📌 OpenAI Codex CLI：'));
-      console.log(chalk.cyan('      啟動：codex'));
-      console.log(chalk.dim('      需要登入 ChatGPT 帳號\n'));
+      console.log(chalk.cyan('      啟動：') + chalk.yellow('codex'));
+      console.log(chalk.dim('      需登入 ChatGPT 帳號\n'));
     }
 
     stepNumber++;
