@@ -14,6 +14,9 @@ import { configureGit, installGitIfNeeded } from './installers/git.js';
 import { installCopilot } from './installers/copilot.js';
 import { installUv } from './installers/uv.js';
 import { installSpecKit } from './installers/speckit.js';
+import { installClaudeCode } from './installers/claude-code.js';
+import { installGeminiCli } from './installers/gemini-cli.js';
+import { installCodexCli } from './installers/codex-cli.js';
 import { upgradePowerShell, displayPowerShellWarning } from './installers/powershell.js';
 
 /**
@@ -227,12 +230,74 @@ export async function main() {
       }
     }
 
-    // 3. GitHub Copilot CLI
+    // 3. AI CLI 工具（多選）
+    console.log(chalk.bold.cyan('\n━━━ AI CLI 工具選擇 ━━━\n'));
+
+    // 建立選項列表
+    const aiCliChoices = [];
+
     if (!tools.copilot.installed) {
-      console.log(chalk.cyan('\n正在安裝 GitHub Copilot CLI...'));
-      await installCopilot();
+      aiCliChoices.push({
+        name: 'GitHub Copilot CLI - GitHub 的 AI 程式輔助工具',
+        value: 'copilot',
+        checked: true
+      });
+    }
+
+    if (!tools.claudeCode.installed) {
+      aiCliChoices.push({
+        name: 'Claude Code CLI - Anthropic Claude 的終端機介面',
+        value: 'claudeCode'
+      });
+    }
+
+    if (!tools.geminiCli.installed) {
+      aiCliChoices.push({
+        name: 'Gemini CLI - Google Gemini 的終端機介面',
+        value: 'geminiCli'
+      });
+    }
+
+    if (!tools.codexCli.installed) {
+      aiCliChoices.push({
+        name: 'OpenAI Codex CLI - OpenAI 的程式輔助工具',
+        value: 'codexCli'
+      });
+    }
+
+    // 如果有未安裝的工具，詢問使用者要安裝哪些
+    if (aiCliChoices.length > 0) {
+      const { selectedAiClis } = await inquirer.prompt([
+        {
+          type: 'checkbox',
+          name: 'selectedAiClis',
+          message: '請選擇要安裝的 AI CLI 工具（空白鍵選擇，Enter 確認）：',
+          choices: aiCliChoices
+        }
+      ]);
+
+      // 安裝選擇的工具
+      for (const tool of selectedAiClis) {
+        if (tool === 'copilot') {
+          console.log(chalk.cyan('\n正在安裝 GitHub Copilot CLI...'));
+          await installCopilot();
+        } else if (tool === 'claudeCode') {
+          console.log(chalk.cyan('\n正在安裝 Claude Code CLI...'));
+          await installClaudeCode();
+        } else if (tool === 'geminiCli') {
+          console.log(chalk.cyan('\n正在安裝 Gemini CLI...'));
+          await installGeminiCli();
+        } else if (tool === 'codexCli') {
+          console.log(chalk.cyan('\n正在安裝 OpenAI Codex CLI...'));
+          await installCodexCli();
+        }
+      }
+
+      if (selectedAiClis.length === 0) {
+        console.log(chalk.dim('跳過 AI CLI 工具安裝\n'));
+      }
     } else {
-      console.log(chalk.blue('⏭  GitHub Copilot CLI 已安裝，跳過\n'));
+      console.log(chalk.blue('⏭  所有 AI CLI 工具都已安裝，跳過\n'));
     }
 
     // 4. UV

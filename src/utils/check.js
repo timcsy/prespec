@@ -167,17 +167,53 @@ export async function checkSpecKit() {
 }
 
 /**
+ * 檢查 Claude Code CLI 是否已安裝
+ * @returns {Promise<{installed: boolean, version: string|null}>}
+ */
+export async function checkClaudeCode() {
+  const installed = await commandExists('claude');
+  const version = installed ? await getCommandVersion('claude') : null;
+
+  return { installed, version };
+}
+
+/**
+ * 檢查 Gemini CLI 是否已安裝
+ * @returns {Promise<{installed: boolean, version: string|null}>}
+ */
+export async function checkGeminiCli() {
+  const installed = await commandExists('gemini');
+  const version = installed ? await getCommandVersion('gemini') : null;
+
+  return { installed, version };
+}
+
+/**
+ * 檢查 OpenAI Codex CLI 是否已安裝
+ * @returns {Promise<{installed: boolean, version: string|null}>}
+ */
+export async function checkCodexCli() {
+  const installed = await commandExists('codex');
+  const version = installed ? await getCommandVersion('codex') : null;
+
+  return { installed, version };
+}
+
+/**
  * 檢查所有工具的安裝狀態
  * @returns {Promise<Object>}
  */
 export async function checkAllTools() {
-  const [nvm, node, git, copilot, uv, speckit] = await Promise.all([
+  const [nvm, node, git, copilot, uv, speckit, claudeCode, geminiCli, codexCli] = await Promise.all([
     checkNvm(),
     checkNode(),
     checkGit(),
     checkCopilot(),
     checkUv(),
-    checkSpecKit()
+    checkSpecKit(),
+    checkClaudeCode(),
+    checkGeminiCli(),
+    checkCodexCli()
   ]);
 
   return {
@@ -186,6 +222,9 @@ export async function checkAllTools() {
     git,
     copilot,
     uv,
-    speckit
+    speckit,
+    claudeCode,
+    geminiCli,
+    codexCli
   };
 }
