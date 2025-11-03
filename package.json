@@ -1,6 +1,6 @@
 {
   "name": "prespec",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "跨平台開發環境快速安裝工具 - 一鍵安裝 NVM、Node.js、Git、GitHub Copilot CLI、UV 和 Spec Kit",
   "main": "src/index.js",
   "type": "module",
