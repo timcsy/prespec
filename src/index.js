@@ -114,8 +114,9 @@ export async function main() {
     } else {
       console.log(chalk.blue('⏭  NVM 已安裝，跳過\n'));
 
-      // 如果 NVM 已安裝但 Node.js 未安裝，詢問是否安裝 Node.js
+      // 檢查 Node.js 狀態
       if (!tools.node.installed) {
+        // 沒有安裝 Node.js，詢問是否透過 NVM 安裝
         const { shouldInstallNode } = await inquirer.prompt([
           {
             type: 'confirm',
@@ -128,6 +129,37 @@ export async function main() {
         if (shouldInstallNode) {
           const nodeVersion = await askNodeVersion();
           await installNodeViaNvm(nodeVersion);
+        }
+      } else {
+        // 已安裝 Node.js，詢問是否要改用 NVM 管理
+        console.log(chalk.yellow(`\n⚠️  偵測到系統已安裝 Node.js ${tools.node.version}`));
+        console.log(chalk.white('但可能不是透過 NVM 安裝的。\n'));
+
+        const { useNvmInstead } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'useNvmInstead',
+            message: '是否要改用 NVM 來管理 Node.js？（建議）',
+            default: false
+          }
+        ]);
+
+        if (useNvmInstead) {
+          console.log(chalk.cyan('\n提示：請先手動移除現有的 Node.js，然後透過 NVM 重新安裝。\n'));
+
+          const { proceedWithNvm } = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'proceedWithNvm',
+              message: '已移除現有 Node.js，現在要透過 NVM 安裝嗎？',
+              default: false
+            }
+          ]);
+
+          if (proceedWithNvm) {
+            const nodeVersion = await askNodeVersion();
+            await installNodeViaNvm(nodeVersion);
+          }
         }
       }
     }
