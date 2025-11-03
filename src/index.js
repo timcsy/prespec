@@ -118,21 +118,39 @@ export async function main() {
 function displayNextSteps(tools) {
   console.log(chalk.bold.cyan('📝 後續步驟：\n'));
 
+  let stepNumber = 1;
+
+  // NVM 重新載入提示
   if (!tools.nvm.installed) {
-    console.log(chalk.yellow('1. 重新載入 Shell 或重新開啟終端機來啟用 NVM'));
+    console.log(chalk.yellow(`${stepNumber}. 重新載入 Shell 或重新開啟終端機來啟用 NVM`));
     console.log(chalk.dim('   執行：source ~/.nvm/nvm.sh\n'));
+    stepNumber++;
   }
 
-  console.log(chalk.yellow('2. 驗證安裝：'));
+  // GitHub Copilot CLI 使用說明
+  if (!tools.copilot.installed) {
+    console.log(chalk.bold.yellow(`${stepNumber}. GitHub Copilot CLI 快速開始：\n`));
+
+    console.log(chalk.white('   啟動 Copilot：'));
+    console.log(chalk.cyan('   $ copilot\n'));
+
+    console.log(chalk.white('   首次使用需要登入：'));
+    console.log(chalk.cyan('   /login\n'));
+
+    console.log(chalk.white('   建議切換為 Haiku 模型（更快速）：'));
+    console.log(chalk.cyan('   /model'));
+    console.log(chalk.dim('   （用方向鍵選擇模型）\n'));
+
+    stepNumber++;
+  }
+
+  // 驗證安裝
+  console.log(chalk.yellow(`${stepNumber}. 驗證安裝：`));
   console.log(chalk.dim('   node --version'));
   console.log(chalk.dim('   git --version'));
-  console.log(chalk.dim('   github-copilot-cli --version'));
+  console.log(chalk.dim('   copilot --version'));
   console.log(chalk.dim('   uv --version'));
-  console.log(chalk.dim('   spec --version\n'));
-
-  if (!tools.copilot.installed) {
-    console.log(chalk.yellow('3. 首次使用 GitHub Copilot CLI 時，記得先使用 /model 切換模型\n'));
-  }
+  console.log(chalk.dim('   specify --version\n'));
 
   console.log(chalk.cyan('享受您的開發環境！ 🚀\n'));
 }
