@@ -317,23 +317,38 @@ function displayNextSteps(tools) {
     if (tools.claudeCode?.installed) {
       console.log(chalk.white('   📌 Claude Code CLI：'));
       console.log(chalk.cyan('      啟動：') + chalk.yellow('claude'));
-      console.log(chalk.dim('      需登入 Anthropic 帳號\n'));
+      console.log(chalk.white('      首次使用：') + chalk.dim('啟動後依照指示登入 Anthropic 帳號\n'));
     }
 
     // Gemini CLI
     if (tools.geminiCli?.installed) {
       console.log(chalk.white('   📌 Gemini CLI：'));
       console.log(chalk.cyan('      啟動：') + chalk.yellow('gemini'));
-      console.log(chalk.dim('      需用 Google 帳號認證\n'));
+      console.log(chalk.white('      首次使用：') + chalk.dim('啟動後依照指示用 Google 帳號認證\n'));
     }
 
     // Codex CLI
     if (tools.codexCli?.installed) {
       console.log(chalk.white('   📌 OpenAI Codex CLI：'));
       console.log(chalk.cyan('      啟動：') + chalk.yellow('codex'));
-      console.log(chalk.dim('      需登入 ChatGPT 帳號\n'));
+      console.log(chalk.white('      首次使用：') + chalk.dim('啟動後依照指示登入 ChatGPT 帳號\n'));
     }
 
+    stepNumber++;
+  }
+
+  // Spec Kit 使用說明
+  if (tools.speckit?.installed) {
+    console.log(chalk.bold.yellow(`${stepNumber}. Spec Kit 快速開始：\n`));
+    console.log(chalk.white('   初始化專案：'));
+    console.log(chalk.yellow('      specify init <project-name>') + chalk.dim('  - 建立新專案'));
+    console.log(chalk.yellow('      specify init . --here') + chalk.dim('         - 在當前目錄初始化\n'));
+    console.log(chalk.white('   在 AI 助手中依序使用：'));
+    console.log(chalk.cyan('      /speckit.constitution') + chalk.dim('  - 建立專案治理原則'));
+    console.log(chalk.cyan('      /speckit.specify') + chalk.dim('       - 定義需求和使用者故事'));
+    console.log(chalk.cyan('      /speckit.plan') + chalk.dim('          - 建立技術實作計劃'));
+    console.log(chalk.cyan('      /speckit.tasks') + chalk.dim('         - 產生可執行任務清單'));
+    console.log(chalk.cyan('      /speckit.implement') + chalk.dim('     - 執行所有任務完成開發\n'));
     stepNumber++;
   }
 
