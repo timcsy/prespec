@@ -3,30 +3,31 @@ import ora from 'ora';
 import chalk from 'chalk';
 
 /**
- * 升級 PowerShell 到最新版本
+ * 升級 PowerShell 到穩定版本 7.3.11
  * @returns {Promise<boolean>}
  */
 export async function upgradePowerShell() {
   const spinner = ora('正在升級 PowerShell...').start();
 
   try {
-    // 使用 MSI 安裝 PowerShell
-    spinner.text = '正在下載 PowerShell 安裝檔...';
+    // 安裝 PowerShell 7.3.11（已驗證的穩定版本）
+    const version = '7.3.11';
+    const downloadUrl = `https://github.com/PowerShell/PowerShell/releases/download/v${version}/PowerShell-${version}-win-x64.msi`;
 
-    // 使用 PowerShell 下載最新版本的 MSI
+    spinner.text = `正在下載 PowerShell ${version}...`;
+
+    // 下載 MSI
     const downloadScript = `
       $ProgressPreference = 'SilentlyContinue'
-      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
-      $msiAsset = $latestRelease.assets | Where-Object { $_.name -like '*-win-x64.msi' } | Select-Object -First 1
-      $downloadUrl = $msiAsset.browser_download_url
-      $outputPath = "$env:TEMP\\PowerShell-Latest.msi"
+      $downloadUrl = '${downloadUrl}'
+      $outputPath = "$env:TEMP\\PowerShell-${version}.msi"
       Invoke-WebRequest -Uri $downloadUrl -OutFile $outputPath
       Write-Output $outputPath
     `;
 
     const { stdout: msiPath } = await execa('powershell', ['-Command', downloadScript]);
 
-    spinner.text = '正在安裝 PowerShell...（這可能需要幾分鐘）';
+    spinner.text = `正在安裝 PowerShell ${version}...（這可能需要幾分鐘）`;
 
     // 安裝 MSI（靜默安裝）
     await execa('msiexec', [
@@ -40,7 +41,7 @@ export async function upgradePowerShell() {
       stdio: 'inherit'
     });
 
-    spinner.succeed(chalk.green('✓ PowerShell 升級成功！'));
+    spinner.succeed(chalk.green(`✓ PowerShell ${version} 安裝成功！`));
 
     console.log(chalk.yellow('\n⚠️  重要提示：'));
     console.log(chalk.white('請關閉目前的 PowerShell 視窗，並開啟新的 PowerShell 7 視窗'));
@@ -74,11 +75,10 @@ export function displayManualUpgradeInstructions() {
   console.log(chalk.dim('  3. 完成後重新開啟 PowerShell\n'));
 
   console.log(chalk.white('【方法 2】下載 MSI 安裝程式（最可靠）'));
-  console.log(chalk.yellow('  1. 前往：'));
-  console.log(chalk.cyan('     https://github.com/PowerShell/PowerShell/releases/latest'));
-  console.log(chalk.yellow('  2. 下載 PowerShell-x.x.x-win-x64.msi'));
-  console.log(chalk.yellow('  3. 執行安裝程式並依照指示完成'));
-  console.log(chalk.dim('  4. 完成後重新開啟 PowerShell\n'));
+  console.log(chalk.yellow('  1. 下載 PowerShell 7.3.11（已驗證的穩定版本）：'));
+  console.log(chalk.cyan('     https://github.com/PowerShell/PowerShell/releases/download/v7.3.11/PowerShell-7.3.11-win-x64.msi'));
+  console.log(chalk.yellow('  2. 執行安裝程式並依照指示完成'));
+  console.log(chalk.dim('  3. 完成後重新開啟 PowerShell\n'));
 
   console.log(chalk.white('【方法 3】使用 Chocolatey'));
   console.log(chalk.yellow('  如果您已安裝 Chocolatey：'));
