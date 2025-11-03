@@ -13,16 +13,36 @@ export async function installNvm() {
 
   try {
     if (isWindows()) {
-      // Windows: 使用 nvm-windows
+      // Windows: 自動安裝 nvm-windows
       spinner.text = '正在下載 nvm-windows 安裝程式...';
-      spinner.warn(
-        chalk.yellow(
-          '\nWindows 使用者請手動下載並安裝 nvm-windows：\n' +
-          'https://github.com/coreybutler/nvm-windows/releases\n' +
-          '下載 nvm-setup.exe 並執行安裝程式。'
-        )
-      );
-      return false;
+
+      // 下載最新版本的 nvm-setup.exe
+      const downloadScript = `
+        $ProgressPreference = 'SilentlyContinue'
+        $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/coreybutler/nvm-windows/releases/latest'
+        $setupAsset = $latestRelease.assets | Where-Object { $_.name -like 'nvm-setup.exe' } | Select-Object -First 1
+        $downloadUrl = $setupAsset.browser_download_url
+        $outputPath = "$env:TEMP\\nvm-setup.exe"
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $outputPath
+        Write-Output $outputPath
+      `;
+
+      const { stdout: setupPath } = await execa('pwsh', ['-Command', downloadScript]);
+
+      spinner.text = '正在安裝 nvm-windows...';
+
+      // 執行安裝程式（靜默安裝）
+      await execa(setupPath.trim(), ['/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART'], {
+        stdio: 'inherit'
+      });
+
+      spinner.succeed(chalk.green('✓ nvm-windows 安裝成功！'));
+
+      console.log(chalk.yellow('\n⚠️  重要提示：'));
+      console.log(chalk.white('請重新開啟 PowerShell 視窗以載入 nvm'));
+      console.log(chalk.dim('然後繼續安裝 Node.js\n'));
+
+      return true;
     } else {
       // macOS / Linux / WSL: 使用官方安裝腳本
       const installScript = 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash';

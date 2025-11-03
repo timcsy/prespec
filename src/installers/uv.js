@@ -12,9 +12,8 @@ export async function installUv() {
 
   try {
     if (isWindows()) {
-      // Windows: 使用 PowerShell 安裝腳本
-      const installCommand = 'powershell -c "irm https://astral.sh/uv/install.ps1 | iex"';
-      await execa('powershell', ['-c', 'irm https://astral.sh/uv/install.ps1 | iex'], {
+      // Windows: 使用 PowerShell 7 安裝腳本
+      await execa('pwsh', ['-c', 'irm https://astral.sh/uv/install.ps1 | iex'], {
         stdio: 'inherit'
       });
     } else {
@@ -46,7 +45,7 @@ export async function installUv() {
     // 提供備用安裝方法
     console.log(chalk.yellow('\n請嘗試手動安裝 UV：'));
     if (isWindows()) {
-      console.log(chalk.cyan('  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"'));
+      console.log(chalk.cyan('  pwsh -c "irm https://astral.sh/uv/install.ps1 | iex"'));
     } else {
       console.log(chalk.cyan('  curl -LsSf https://astral.sh/uv/install.sh | sh'));
     }
