@@ -278,30 +278,63 @@ function displayNextSteps(tools) {
     stepNumber++;
   }
 
-  // GitHub Copilot CLI 使用說明
-  if (!tools.copilot.installed) {
-    console.log(chalk.bold.yellow(`${stepNumber}. GitHub Copilot CLI 快速開始：\n`));
+  // AI CLI 工具使用說明
+  const installedAiTools = [];
+  if (tools.copilot?.installed) installedAiTools.push('copilot');
+  if (tools.claudeCode?.installed) installedAiTools.push('claude');
+  if (tools.geminiCli?.installed) installedAiTools.push('gemini');
+  if (tools.codexCli?.installed) installedAiTools.push('codex');
 
-    console.log(chalk.white('   啟動 Copilot：'));
-    console.log(chalk.cyan('   $ copilot\n'));
+  if (installedAiTools.length > 0) {
+    console.log(chalk.bold.yellow(`${stepNumber}. AI CLI 工具快速開始：\n`));
 
-    console.log(chalk.white('   首次使用需要登入：'));
-    console.log(chalk.cyan('   /login\n'));
+    // GitHub Copilot CLI 特別提醒
+    if (tools.copilot?.installed) {
+      console.log(chalk.white('   📌 GitHub Copilot CLI：'));
+      console.log(chalk.cyan('      啟動：copilot'));
+      console.log(chalk.yellow('      首次使用需要登入：/login'));
+      console.log(chalk.yellow('      建議選擇 Haiku 模型（更快速且省 token）：/model'));
+      console.log(chalk.dim('      （用方向鍵選擇 Haiku）\n'));
+    }
 
-    console.log(chalk.white('   建議切換為 Haiku 模型（更快速）：'));
-    console.log(chalk.cyan('   /model'));
-    console.log(chalk.dim('   （用方向鍵選擇模型）\n'));
+    // Claude Code CLI
+    if (tools.claudeCode?.installed) {
+      console.log(chalk.white('   📌 Claude Code CLI：'));
+      console.log(chalk.cyan('      啟動：claude'));
+      console.log(chalk.dim('      需要登入您的 Anthropic 帳號\n'));
+    }
+
+    // Gemini CLI
+    if (tools.geminiCli?.installed) {
+      console.log(chalk.white('   📌 Gemini CLI：'));
+      console.log(chalk.cyan('      啟動：gemini'));
+      console.log(chalk.dim('      需要用 Google 帳號認證\n'));
+    }
+
+    // Codex CLI
+    if (tools.codexCli?.installed) {
+      console.log(chalk.white('   📌 OpenAI Codex CLI：'));
+      console.log(chalk.cyan('      啟動：codex'));
+      console.log(chalk.dim('      需要登入 ChatGPT 帳號\n'));
+    }
 
     stepNumber++;
   }
 
   // 驗證安裝
   console.log(chalk.yellow(`${stepNumber}. 驗證安裝：`));
-  console.log(chalk.dim('   node --version'));
-  console.log(chalk.dim('   git --version'));
-  console.log(chalk.dim('   copilot --version'));
-  console.log(chalk.dim('   uv --version'));
-  console.log(chalk.dim('   specify --version\n'));
+  const verifyCommands = ['node --version', 'git --version'];
+  if (tools.copilot?.installed) verifyCommands.push('copilot --version');
+  if (tools.claudeCode?.installed) verifyCommands.push('claude --version');
+  if (tools.geminiCli?.installed) verifyCommands.push('gemini --version');
+  if (tools.codexCli?.installed) verifyCommands.push('codex --version');
+  if (tools.uv?.installed) verifyCommands.push('uv --version');
+  if (tools.speckit?.installed) verifyCommands.push('specify --version');
+
+  verifyCommands.forEach(cmd => {
+    console.log(chalk.dim(`   ${cmd}`));
+  });
+  console.log();
 
   console.log(chalk.cyan('享受您的開發環境！ 🚀\n'));
 }
