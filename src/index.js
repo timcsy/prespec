@@ -270,8 +270,11 @@ export async function main() {
     console.log(chalk.bold.green('║          安裝流程已完成！              ║'));
     console.log(chalk.bold.green('╚════════════════════════════════════════╝\n'));
 
+    // 重新檢查所有工具狀態，確保顯示最新的安裝狀態
+    const finalTools = await checkAllTools();
+
     // 顯示後續步驟
-    displayNextSteps(tools);
+    displayNextSteps(finalTools);
 
   } catch (error) {
     console.error(chalk.red('\n發生錯誤：'), error.message);
