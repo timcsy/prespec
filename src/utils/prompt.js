@@ -158,9 +158,18 @@ export function displayCheckResults(tools) {
       }
     },
     {
-      name: 'GitHub Copilot CLI',
-      data: tools.copilot,
-      getStatus: (d) => d.installed ? `✓ 已安裝 ${d.version ? `(${d.version})` : ''}` : '✗ 未安裝'
+      name: 'AI CLI 工具',
+      data: tools,
+      getStatus: (t) => {
+        const installed = [];
+        if (t.copilot?.installed) installed.push('Copilot');
+        if (t.claudeCode?.installed) installed.push('Claude');
+        if (t.geminiCli?.installed) installed.push('Gemini');
+        if (t.codexCli?.installed) installed.push('Codex');
+
+        if (installed.length === 0) return '✗ 未安裝';
+        return `✓ 已安裝 (${installed.join(', ')})`;
+      }
     },
     {
       name: 'UV',
