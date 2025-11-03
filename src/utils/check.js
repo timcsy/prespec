@@ -42,21 +42,49 @@ async function getCommandVersion(command, args = ['--version']) {
  */
 export async function checkNvm() {
   const home = os.homedir();
-  const nvmDir = process.env.NVM_DIR || path.join(home, '.nvm');
-  const nvmExists = fs.existsSync(nvmDir);
 
-  if (!nvmExists) {
-    return { installed: false, version: null, path: null };
+  if (os.platform() === 'win32') {
+    // Windows: 檢查 nvm-windows
+    // nvm-windows 預設安裝在 C:\Users\<username>\AppData\Roaming\nvm
+    const nvmDir = process.env.NVM_HOME || path.join(home, 'AppData', 'Roaming', 'nvm');
+    const nvmExists = fs.existsSync(nvmDir);
+
+    if (!nvmExists) {
+      return { installed: false, version: null, path: null };
+    }
+
+    // Windows 的 nvm 指令需要透過 cmd 執行
+    let version = null;
+    try {
+      const { stdout } = await execa('nvm', ['version']);
+      version = stdout.trim();
+    } catch {
+      // 可能還沒重新開啟終端機
+    }
+
+    return {
+      installed: true,
+      version,
+      path: nvmDir
+    };
+  } else {
+    // Unix-like: 檢查 nvm.sh
+    const nvmDir = process.env.NVM_DIR || path.join(home, '.nvm');
+    const nvmExists = fs.existsSync(nvmDir);
+
+    if (!nvmExists) {
+      return { installed: false, version: null, path: null };
+    }
+
+    // 嘗試取得版本
+    const version = await getCommandVersion('nvm', ['--version']);
+
+    return {
+      installed: true,
+      version,
+      path: nvmDir
+    };
   }
-
-  // 嘗試取得版本
-  const version = await getCommandVersion('nvm', ['--version']);
-
-  return {
-    installed: true,
-    version,
-    path: nvmDir
-  };
 }
 
 /**

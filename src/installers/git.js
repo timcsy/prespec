@@ -74,8 +74,12 @@ export async function installGit() {
       spinner.succeed(chalk.green('✓ Git 安裝成功！'));
 
       console.log(chalk.yellow('\n⚠️  重要提示：'));
-      console.log(chalk.white('請重新開啟 PowerShell 視窗以載入 Git'));
-      console.log(chalk.dim('然後繼續設定 Git 使用者資訊\n'));
+      console.log(chalk.white('Git 需要重新開啟終端機才能使用'));
+      console.log(chalk.cyan('\n請執行以下步驟：'));
+      console.log(chalk.white('  1. 關閉目前的 PowerShell 視窗'));
+      console.log(chalk.white('  2. 重新開啟 PowerShell'));
+      console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
+      console.log(chalk.dim('\n然後將繼續設定 Git 使用者資訊\n'));
 
       return true;
     } else {

@@ -44,8 +44,12 @@ export async function upgradePowerShell() {
     spinner.succeed(chalk.green(`✓ PowerShell ${version} 安裝成功！`));
 
     console.log(chalk.yellow('\n⚠️  重要提示：'));
-    console.log(chalk.white('請關閉目前的 PowerShell 視窗，並開啟新的 PowerShell 7 視窗'));
-    console.log(chalk.dim('然後重新執行 prespec 完成安裝\n'));
+    console.log(chalk.white('PowerShell 需要重新開啟終端機才能使用新版本'));
+    console.log(chalk.cyan('\n請執行以下步驟：'));
+    console.log(chalk.white('  1. 關閉目前的 PowerShell 視窗'));
+    console.log(chalk.white('  2. 重新開啟 PowerShell（使用 PowerShell 7）'));
+    console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
+    console.log(chalk.dim('\n然後將繼續完成安裝\n'));
 
     return true;
 
