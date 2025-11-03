@@ -76,8 +76,8 @@ export async function installGit() {
       console.log(chalk.yellow('\n⚠️  重要提示：'));
       console.log(chalk.white('Git 需要重新開啟終端機才能使用'));
       console.log(chalk.cyan('\n請執行以下步驟：'));
-      console.log(chalk.white('  1. 關閉目前的 PowerShell 視窗'));
-      console.log(chalk.white('  2. 重新開啟 PowerShell'));
+      console.log(chalk.white('  1. 關閉目前的終端機視窗'));
+      console.log(chalk.white('  2. 重新開啟終端機（cmd 或 pwsh 皆可）'));
       console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
       console.log(chalk.dim('\n然後將繼續設定 Git 使用者資訊\n'));
 
