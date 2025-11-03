@@ -218,7 +218,13 @@ export async function main() {
       }
     } else {
       console.log(chalk.yellow('\n⚠  Git 未安裝'));
-      await installGitIfNeeded();
+      const gitInstalled = await installGitIfNeeded();
+
+      if (gitInstalled && isWindows()) {
+        // Windows: Git 安裝後需要重新開啟終端機
+        console.log(chalk.cyan('\n※ 安裝訊息已顯示，請依照指示重新開啟終端機並執行 npx prespec\n'));
+        process.exit(0);
+      }
     }
 
     // 3. GitHub Copilot CLI
@@ -232,7 +238,13 @@ export async function main() {
     // 4. UV
     if (!tools.uv.installed) {
       console.log(chalk.cyan('\n正在安裝 UV...'));
-      await installUv();
+      const uvInstalled = await installUv();
+
+      if (uvInstalled) {
+        // UV 安裝後需要重新開啟終端機
+        console.log(chalk.cyan('\n※ 安裝訊息已顯示，請依照指示重新開啟終端機並執行 npx prespec\n'));
+        process.exit(0);
+      }
     } else {
       console.log(chalk.blue('⏭  UV 已安裝，跳過\n'));
     }

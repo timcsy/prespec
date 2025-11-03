@@ -26,11 +26,16 @@ export async function installUv() {
 
     spinner.succeed(chalk.green('✓ UV 安裝成功！'));
 
-    // 顯示說明
-    console.log(chalk.cyan('\nUV 已安裝完成。UV 會自動管理 Python 版本。'));
-    console.log(chalk.dim('使用 uv 指令來管理 Python 專案和套件\n'));
+    console.log(chalk.yellow('\n⚠️  重要提示：'));
+    console.log(chalk.white('UV 需要重新開啟終端機才能使用'));
+    console.log(chalk.cyan('\n請執行以下步驟：'));
+    console.log(chalk.white('  1. 關閉目前的終端機視窗'));
+    console.log(chalk.white('  2. 重新開啟終端機（cmd 或 pwsh 皆可）'));
+    console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
+    console.log(chalk.dim('\n然後將繼續安裝 Spec Kit\n'));
 
-    console.log(chalk.white('常用指令：'));
+    console.log(chalk.cyan('UV 使用說明：'));
+    console.log(chalk.white('UV 會自動管理 Python 版本。常用指令：'));
     console.log(chalk.yellow('  uv init          - 初始化新專案'));
     console.log(chalk.yellow('  uv add <package> - 新增套件'));
     console.log(chalk.yellow('  uv run <command> - 執行指令'));
