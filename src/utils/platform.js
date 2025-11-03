@@ -104,22 +104,36 @@ export function getShellConfigPath() {
 
 /**
  * 檢查 PowerShell 版本（僅 Windows）
- * @returns {Promise<{version: number|null, needsUpdate: boolean}>}
+ * 優先檢查 pwsh (PowerShell 7)，如果不存在才檢查 powershell (Windows PowerShell 5.1)
+ * @returns {Promise<{version: number|null, needsUpdate: boolean, isPwsh: boolean}>}
  */
 export async function checkPowerShellVersion() {
   if (!isWindows()) {
-    return { version: null, needsUpdate: false };
+    return { version: null, needsUpdate: false, isPwsh: false };
   }
 
+  // 優先檢查 PowerShell 7 (pwsh)
   try {
-    const { stdout } = await execa('powershell', ['-Command', '$PSVersionTable.PSVersion.Major']);
+    const { stdout } = await execa('pwsh', ['-Command', '$PSVersionTable.PSVersion.Major']);
     const version = parseInt(stdout.trim(), 10);
     return {
       version,
-      needsUpdate: version < 6
+      needsUpdate: false, // pwsh 存在就表示已經有 PowerShell 7
+      isPwsh: true
     };
   } catch (error) {
-    // 無法取得版本，假設需要更新
-    return { version: null, needsUpdate: true };
+    // pwsh 不存在，檢查舊版 powershell
+    try {
+      const { stdout } = await execa('powershell', ['-Command', '$PSVersionTable.PSVersion.Major']);
+      const version = parseInt(stdout.trim(), 10);
+      return {
+        version,
+        needsUpdate: version < 6,
+        isPwsh: false
+      };
+    } catch (error2) {
+      // 無法取得版本，假設需要更新
+      return { version: null, needsUpdate: true, isPwsh: false };
+    }
   }
 }

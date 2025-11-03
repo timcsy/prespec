@@ -31,6 +31,12 @@ export async function main() {
     // Windows: 檢查 PowerShell 版本
     if (isWindows()) {
       const psVersion = await checkPowerShellVersion();
+
+      // 如果已經有 PowerShell 7，顯示確認訊息
+      if (psVersion.isPwsh) {
+        console.log(chalk.green(`✓ 已安裝 PowerShell 7 (版本 ${psVersion.version})\n`));
+      }
+
       if (psVersion.needsUpdate) {
         displayPowerShellWarning(psVersion.version);
 
