@@ -73,16 +73,16 @@ export function displayManualUpgradeInstructions() {
   console.log(chalk.bold.cyan('📖 PowerShell 升級方法：\n'));
 
   console.log(chalk.white('【方法 1】使用 winget（推薦，最簡單）'));
-  console.log(chalk.yellow('  1. 開啟 PowerShell（系統管理員權限）'));
+  console.log(chalk.yellow('  1. 開啟終端機（系統管理員權限）'));
   console.log(chalk.yellow('  2. 執行以下指令：'));
   console.log(chalk.cyan('     winget install Microsoft.PowerShell'));
-  console.log(chalk.dim('  3. 完成後重新開啟 PowerShell\n'));
+  console.log(chalk.dim('  3. 完成後重新開啟終端機並執行：npx prespec\n'));
 
   console.log(chalk.white('【方法 2】下載 MSI 安裝程式（最可靠）'));
   console.log(chalk.yellow('  1. 下載 PowerShell 7.3.11（已驗證的穩定版本）：'));
   console.log(chalk.cyan('     https://github.com/PowerShell/PowerShell/releases/download/v7.3.11/PowerShell-7.3.11-win-x64.msi'));
   console.log(chalk.yellow('  2. 執行安裝程式並依照指示完成'));
-  console.log(chalk.dim('  3. 完成後重新開啟 PowerShell\n'));
+  console.log(chalk.dim('  3. 完成後重新開啟終端機並執行：npx prespec\n'));
 
   console.log(chalk.white('【方法 3】使用 Chocolatey'));
   console.log(chalk.yellow('  如果您已安裝 Chocolatey：'));

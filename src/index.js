@@ -52,7 +52,7 @@ export async function main() {
         if (shouldUpgrade) {
           const success = await upgradePowerShell();
           if (success) {
-            console.log(chalk.yellow('升級完成！請重新執行 prespec 以繼續安裝。\n'));
+            console.log(chalk.yellow('※ 安裝訊息已顯示，請依照指示重新開啟終端機並執行 npx prespec\n'));
             process.exit(0);
           } else {
             console.log(chalk.yellow('\n自動升級失敗。'));
@@ -66,7 +66,7 @@ export async function main() {
             ]);
 
             if (!continueAnyway) {
-              console.log(chalk.yellow('\n安裝已取消。請手動升級 PowerShell 後重新執行 prespec。\n'));
+              console.log(chalk.yellow('\n安裝已取消。請手動升級 PowerShell 後重新執行 npx prespec。\n'));
               process.exit(0);
             }
           }
@@ -101,8 +101,8 @@ export async function main() {
 
         if (nvmSuccess) {
           if (isWindows()) {
-            // Windows: nvm 安裝後需要重新開啟 PowerShell
-            console.log(chalk.cyan('\n請重新開啟 PowerShell 並執行 prespec，然後選擇 Node.js 版本進行安裝。\n'));
+            // Windows: nvm 安裝後需要重新開啟終端機
+            console.log(chalk.cyan('\n※ 安裝訊息已顯示，請依照指示重新開啟終端機並執行 npx prespec\n'));
             process.exit(0);
           } else {
             // Unix-like: 可以在同一個 session 中安裝 Node.js
