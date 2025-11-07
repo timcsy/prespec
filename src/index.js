@@ -181,7 +181,8 @@ export async function main() {
     if (!tools.geminiCli.installed) {
       aiCliChoices.push({
         name: 'Gemini CLI - Google Gemini 的終端機介面',
-        value: 'geminiCli'
+        value: 'geminiCli',
+        checked: true
       });
     }
 
