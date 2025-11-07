@@ -6,6 +6,26 @@
 
 ## 快速開始
 
+### 前置需求
+
+執行 `npx prespec` 需要先安裝 **Node.js 18.0.0 或更高版本**。
+
+**如果 `npx` 指令失敗，請先安裝 Node.js：**
+
+- **macOS / Linux**：
+  ```bash
+  # 使用官方安裝程式
+  # 下載：https://nodejs.org/
+  ```
+
+- **Windows**：
+  ```bash
+  # 下載並安裝 Node.js
+  # 下載：https://nodejs.org/
+  ```
+
+安裝完成後，重新開啟終端機即可使用 `npx` 指令。
+
 ### 三步驟完成開發環境設定
 
 ```bash
@@ -26,6 +46,8 @@ specify     # 使用 Spec Kit
 - ✅ 引導您完成互動式安裝
 - ✅ 設定 Git 使用者資訊
 - ✅ 提供詳細的使用說明
+
+> 💡 **提示**：如果您還沒有 Node.js，prespec 會幫您安裝 NVM 和 Node.js！但首次執行需要先有一個 Node.js 來執行安裝程式本身。
 
 ## 功能特色
 
