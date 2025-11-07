@@ -4,6 +4,29 @@
 
 一鍵安裝常用的開發工具，包括 NVM、Node.js、Git、AI CLI 工具、UV、Spec Kit 和 VSCode。
 
+## 快速開始
+
+### 三步驟完成開發環境設定
+
+```bash
+# 1. 執行安裝程式
+npx prespec
+
+# 2. 如有需要，重新開啟終端機（程式會提示）
+
+# 3. 開始使用！
+copilot     # 啟動 GitHub Copilot CLI
+gemini      # 啟動 Gemini CLI
+claude      # 啟動 Claude Code CLI
+specify     # 使用 Spec Kit
+```
+
+**就這麼簡單！** 程式會自動：
+- ✅ 檢測已安裝的工具
+- ✅ 引導您完成互動式安裝
+- ✅ 設定 Git 使用者資訊
+- ✅ 提供詳細的使用說明
+
 ## 功能特色
 
 - 🚀 **一鍵安裝** - 透過簡單的指令快速設定開發環境
