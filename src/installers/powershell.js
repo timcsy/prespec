@@ -29,30 +29,45 @@ export async function upgradePowerShell() {
 
     spinner.text = `正在安裝 PowerShell ${version}...（這可能需要幾分鐘）`;
 
-    // 安裝 MSI（靜默安裝）
-    await execa('msiexec', [
-      '/i',
-      msiPath.trim(),
-      '/qn',
-      '/norestart',
-      'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1',
-      'ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1'
-    ], {
-      stdio: 'inherit'
-    });
+    // 使用 setTimeout 監控安裝時間，超過 3 分鐘提示可能需要管理員權限
+    const installTimeout = setTimeout(() => {
+      console.log(chalk.yellow('\n\n⚠️  安裝時間較長，可能需要以系統管理員身份執行終端機'));
+      console.log(chalk.dim('   請確認您是否以系統管理員身份開啟 cmd 或 pwsh'));
+      console.log(chalk.dim('   如需要，請關閉目前的終端機，以系統管理員身份重新開啟後再執行 npx prespec\n'));
+    }, 180000); // 3 分鐘
 
-    spinner.succeed(chalk.green(`✓ PowerShell ${version} 安裝成功！`));
+    try {
+      // 安裝 MSI（靜默安裝）
+      await execa('msiexec', [
+        '/i',
+        msiPath.trim(),
+        '/qn',
+        '/norestart',
+        'ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1',
+        'ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1'
+      ], {
+        stdio: 'inherit'
+      });
 
-    console.log(chalk.yellow('\n⚠️  重要提示：'));
-    console.log(chalk.white('PowerShell 需要重新開啟終端機才能使用新版本'));
-    console.log(chalk.cyan('\n請執行以下步驟：'));
-    console.log(chalk.white('  1. 關閉目前的終端機視窗'));
-    console.log(chalk.white('  2. 重新開啟終端機'));
-    console.log(chalk.dim('     建議使用 pwsh（PowerShell 7），cmd 也可以'));
-    console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
-    console.log(chalk.dim('\n然後將繼續完成安裝\n'));
+      clearTimeout(installTimeout);
+      spinner.succeed(chalk.green(`✓ PowerShell ${version} 安裝成功！`));
 
-    return true;
+      console.log(chalk.yellow('\n⚠️  重要提示：'));
+      console.log(chalk.white('PowerShell 需要重新開啟終端機才能使用新版本'));
+      console.log(chalk.cyan('\n請執行以下步驟：'));
+      console.log(chalk.white('  1. 關閉目前的終端機視窗'));
+      console.log(chalk.white('  2. 重新開啟終端機'));
+      console.log(chalk.yellow('     建議使用 pwsh（PowerShell 7）'));
+      console.log(chalk.yellow('     如果仍顯示未安裝，請用 pwsh 指令重新開啟終端機'));
+      console.log(chalk.dim('     cmd 也可以'));
+      console.log(chalk.white('  3. 執行：') + chalk.yellow('npx prespec'));
+      console.log(chalk.dim('\n然後將繼續完成安裝\n'));
+
+      return true;
+    } catch (installError) {
+      clearTimeout(installTimeout);
+      throw installError;
+    }
 
   } catch (error) {
     spinner.fail(chalk.red('✗ PowerShell 升級失敗'));
