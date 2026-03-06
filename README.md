@@ -39,6 +39,7 @@ copilot     # 啟動 GitHub Copilot CLI
 gemini      # 啟動 Gemini CLI
 claude      # 啟動 Claude Code CLI
 specify     # 使用 Spec Kit
+openspec    # 使用 OpenSpec
 ```
 
 **就這麼簡單！** 程式會自動：
