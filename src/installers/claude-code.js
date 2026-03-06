@@ -1,6 +1,7 @@
 import { execa } from 'execa';
 import ora from 'ora';
 import chalk from 'chalk';
+import { isWindows } from '../utils/platform.js';
 
 /**
  * 安裝 Claude Code CLI
@@ -10,10 +11,17 @@ export async function installClaudeCode() {
   const spinner = ora('正在安裝 Claude Code CLI...').start();
 
   try {
-    // 使用 npm 全域安裝
-    await execa('npm', ['install', '-g', '@anthropic-ai/claude-code'], {
-      stdio: 'inherit'
-    });
+    if (isWindows()) {
+      // Windows: 使用官方 PowerShell 安裝腳本
+      await execa('powershell', ['-Command', 'irm https://claude.ai/install.ps1 | iex'], {
+        stdio: 'inherit'
+      });
+    } else {
+      // macOS / Linux / WSL: 使用官方安裝腳本
+      await execa('bash', ['-c', 'curl -fsSL https://claude.ai/install.sh | bash'], {
+        stdio: 'inherit'
+      });
+    }
 
     spinner.succeed(chalk.green('✓ Claude Code CLI 安裝成功！'));
     displayClaudeCodeInstructions();
@@ -23,7 +31,11 @@ export async function installClaudeCode() {
     console.error(chalk.red(`錯誤：${error.message}`));
 
     console.log(chalk.yellow('\n請嘗試手動安裝：'));
-    console.log(chalk.cyan('  npm install -g @anthropic-ai/claude-code'));
+    if (isWindows()) {
+      console.log(chalk.cyan('  powershell -Command "irm https://claude.ai/install.ps1 | iex"'));
+    } else {
+      console.log(chalk.cyan('  curl -fsSL https://claude.ai/install.sh | bash'));
+    }
     console.log();
 
     return false;
@@ -49,6 +61,6 @@ export function displayClaudeCodeInstructions() {
   console.log();
 
   console.log(chalk.blue('💡 更多資訊：'));
-  console.log(chalk.blue('   https://docs.claude.com/en/docs/claude-code'));
+  console.log(chalk.blue('   https://code.claude.com/docs/en/setup'));
   console.log();
 }

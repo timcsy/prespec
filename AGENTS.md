@@ -18,9 +18,15 @@
 1. **NVM** (Node Version Manager) - 可選安裝
 2. **Node.js** - 透過 NVM 安裝，支援 LTS 或自訂版本
 3. **Git** - 包含使用者資訊設定
-4. **GitHub Copilot CLI** (`@github/copilot`) - AI 程式設計助手（需要 Node.js v22+、npm v10+、有效的 Copilot 訂閱）
+4. **AI CLI 工具**（多選）：
+   - **GitHub Copilot CLI** (`@github/copilot`) - AI 程式設計助手（需要 Node.js v22+、npm v10+、有效的 Copilot 訂閱）
+   - **Claude Code CLI** - Anthropic Claude 的終端機介面（使用原生安裝程式）
+   - **Gemini CLI** (`@google/gemini-cli`) - Google Gemini 的終端機介面
+   - **OpenAI Codex CLI** (`@openai/codex`) - OpenAI 的程式輔助工具
 5. **UV** - Python 套件管理器（會自動管理 Python）
 6. **Spec Kit** (Specify CLI) - GitHub 的規格驅動開發工具（透過 uv 從 Git 安裝）
+7. **OpenSpec** (`@fission-ai/openspec`) - 規格驅動開發工具（透過 npm 全域安裝）
+8. **VSCode** - 程式碼編輯器（可選）
 
 ## 專案架構
 
@@ -38,8 +44,13 @@ prespec/
 │       ├── nvm.js          # NVM 和 Node.js 安裝
 │       ├── git.js          # Git 配置
 │       ├── copilot.js      # GitHub Copilot CLI 安裝
+│       ├── claude-code.js  # Claude Code CLI 安裝（原生安裝程式）
+│       ├── gemini-cli.js   # Gemini CLI 安裝
+│       ├── codex-cli.js    # OpenAI Codex CLI 安裝
 │       ├── uv.js           # UV 安裝
 │       ├── speckit.js      # Spec Kit 安裝
+│       ├── openspec.js     # OpenSpec 安裝
+│       ├── vscode.js       # VSCode 安裝
 │       └── powershell.js   # PowerShell 升級（Windows）
 ├── package.json            # npm 套件設定
 ├── README.md               # 使用者文件
@@ -65,9 +76,11 @@ prespec/
    - NVM（詢問是否安裝）
    - Node.js（選擇版本）
    - Git（設定使用者資訊）
-   - GitHub Copilot CLI
+   - AI CLI 工具（多選：Copilot、Claude Code、Gemini、Codex）
    - UV
    - Spec Kit
+   - OpenSpec
+   - VSCode（可選）
 7. 顯示完成訊息和後續步驟
 ```
 
@@ -89,8 +102,13 @@ prespec/
 - `checkNode()` - 檢查 Node.js 是否安裝及版本
 - `checkGit()` - 檢查 Git 是否安裝及是否已設定使用者資訊
 - `checkCopilot()` - 檢查 GitHub Copilot CLI
+- `checkClaudeCode()` - 檢查 Claude Code CLI
+- `checkGeminiCli()` - 檢查 Gemini CLI
+- `checkCodexCli()` - 檢查 OpenAI Codex CLI
 - `checkUv()` - 檢查 UV
 - `checkSpecKit()` - 檢查 Spec Kit
+- `checkOpenSpec()` - 檢查 OpenSpec
+- `checkVSCode()` - 檢查 VSCode
 - `checkAllTools()` - 一次檢查所有工具
 
 #### 4. `src/utils/prompt.js` - 使用者互動
@@ -109,7 +127,7 @@ prespec/
 
 - **nvm.js**：
   - Windows 提示手動安裝 nvm-windows
-  - Unix-like 系統使用官方安裝腳本
+  - Unix-like 系統使用官方安裝腳本（v0.40.2）
   - 透過 NVM 安裝 Node.js（支援 LTS 和指定版本）
 
 - **git.js**：
@@ -121,7 +139,18 @@ prespec/
   - 安裝後顯示詳細使用說明
   - 說明啟動方式（`copilot` 指令）
   - 說明首次登入方式（`/login` 指令）
-  - 預設使用 Claude Sonnet 4.5 模型
+  - 預設使用 Claude Sonnet 4.6 模型
+
+- **claude-code.js**：
+  - macOS/Linux/WSL：使用 `curl -fsSL https://claude.ai/install.sh | bash`
+  - Windows：使用 `irm https://claude.ai/install.ps1 | iex`
+  - 使用 `isWindows()` 判斷平台
+
+- **gemini-cli.js**：
+  - 使用 `npm install -g @google/gemini-cli` 安裝
+
+- **codex-cli.js**：
+  - 使用 `npm install -g @openai/codex` 安裝
 
 - **uv.js**：
   - Windows 使用 PowerShell 安裝腳本
@@ -133,6 +162,15 @@ prespec/
   - 指令名稱為 `specify`（不是 `spec`）
   - 顯示規格驅動開發的使用說明
   - 說明在 AI 助手中使用 `/speckit.*` 指令
+
+- **openspec.js**：
+  - 使用 `npm install -g @fission-ai/openspec@latest` 安裝
+  - 指令名稱為 `openspec`
+  - 顯示使用說明：`openspec init`、`/opsx:propose`、`/opsx:apply`
+
+- **vscode.js**：
+  - 自動下載並安裝 VSCode
+  - 安裝後設定 `code` CLI 指令
 
 - **powershell.js**（Windows 專用）：
   - 檢查 PowerShell 版本是否低於 6
@@ -173,10 +211,20 @@ prespec/
 **重點**：
 - 啟動指令：`copilot`（不是直接輸入問題）
 - 首次使用需要 `/login` 登入
-- 預設模型為 Claude Sonnet 4.5（公開預覽版本）
+- 預設模型為 Claude Sonnet 4.6
 - 需要 Node.js v22+、npm v10+ 和有效的 GitHub Copilot 訂閱
 
-### 4. Spec Kit 安裝方式
+### 4. Claude Code CLI 安裝方式
+
+**決策**：使用原生安裝程式（非 npm）
+
+**原因**：
+- npm 安裝已被 Anthropic 官方棄用
+- macOS/Linux/WSL 使用 `curl -fsSL https://claude.ai/install.sh | bash`
+- Windows 使用 `irm https://claude.ai/install.ps1 | iex`
+- 文件 URL：`https://code.claude.com/docs/en/setup`
+
+### 5. Spec Kit 安裝方式
 
 **決策**：使用 `uv tool install` 從 Git 安裝
 
@@ -186,7 +234,16 @@ prespec/
 - 指令名稱為 `specify`（不是 `spec`）
 - 這是 GitHub 官方推薦的安裝方式
 
-### 5. 平台支援策略
+### 6. OpenSpec 安裝方式
+
+**決策**：使用 `npm install -g @fission-ai/openspec@latest` 安裝
+
+**原因**：
+- 與 Spec Kit 並列為規格驅動開發工具
+- 透過 npm 全域安裝，簡單直接
+- 指令名稱為 `openspec`
+
+### 7. 平台支援策略
 
 **決策**：完整支援 macOS、Linux、Windows（含 WSL）
 
@@ -283,8 +340,13 @@ prespec/
 - [NVM](https://github.com/nvm-sh/nvm)
 - [nvm-windows](https://github.com/coreybutler/nvm-windows)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli)
+- [Claude Code CLI](https://code.claude.com/docs/en/setup)
+- [Gemini CLI](https://www.npmjs.com/package/@google/gemini-cli)
+- [OpenAI Codex CLI](https://www.npmjs.com/package/@openai/codex)
 - [UV](https://docs.astral.sh/uv/)
 - [Spec Kit](https://github.com/github/spec-kit)
+- [OpenSpec](https://github.com/fission-ai/openspec)
+- [VSCode](https://code.visualstudio.com/)
 
 ### 使用的 npm 套件
 
@@ -320,6 +382,6 @@ MIT License - 詳見 [LICENSE](LICENSE) 文件
 
 ---
 
-**最後更新**：2025-11-03
+**最後更新**：2026-03-06
 **維護者**：timcsy
 **專案狀態**：Active Development

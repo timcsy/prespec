@@ -14,6 +14,7 @@ import { configureGit, installGitIfNeeded } from './installers/git.js';
 import { installCopilot } from './installers/copilot.js';
 import { installUv } from './installers/uv.js';
 import { installSpecKit } from './installers/speckit.js';
+import { installOpenSpec } from './installers/openspec.js';
 import { installClaudeCode } from './installers/claude-code.js';
 import { installGeminiCli } from './installers/gemini-cli.js';
 import { installCodexCli } from './installers/codex-cli.js';
@@ -245,6 +246,14 @@ export async function main() {
       console.log(chalk.blue('⏭  Spec Kit 已安裝，跳過\n'));
     }
 
+    // 5.5. OpenSpec
+    if (!tools.openspec.installed) {
+      console.log(chalk.cyan('\n正在安裝 OpenSpec...'));
+      await installOpenSpec();
+    } else {
+      console.log(chalk.blue('⏭  OpenSpec 已安裝，跳過\n'));
+    }
+
     // 6. VSCode
     if (!tools.vscode.installed) {
       console.log(chalk.cyan('\n═══ VSCode 安裝建議 ═══\n'));
@@ -356,6 +365,17 @@ function displayNextSteps(tools) {
     stepNumber++;
   }
 
+  // OpenSpec 使用說明
+  if (tools.openspec?.installed) {
+    console.log(chalk.bold.yellow(`${stepNumber}. OpenSpec 快速開始：\n`));
+    console.log(chalk.white('   初始化專案：'));
+    console.log(chalk.yellow('      openspec init\n'));
+    console.log(chalk.white('   在 AI 助手中使用：'));
+    console.log(chalk.cyan('      /opsx:propose') + chalk.dim('  - 提出需求變更'));
+    console.log(chalk.cyan('      /opsx:apply') + chalk.dim('    - 套用規格到程式碼\n'));
+    stepNumber++;
+  }
+
   // 驗證安裝
   console.log(chalk.yellow(`${stepNumber}. 驗證安裝：`));
   const verifyCommands = ['node --version', 'git --version'];
@@ -365,6 +385,7 @@ function displayNextSteps(tools) {
   if (tools.codexCli?.installed) verifyCommands.push('codex --version');
   if (tools.uv?.installed) verifyCommands.push('uv --version');
   if (tools.speckit?.installed) verifyCommands.push('specify --version');
+  if (tools.openspec?.installed) verifyCommands.push('openspec --version');
 
   verifyCommands.forEach(cmd => {
     console.log(chalk.dim(`   ${cmd}`));

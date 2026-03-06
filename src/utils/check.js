@@ -212,17 +212,29 @@ export async function checkVSCode() {
 }
 
 /**
+ * 檢查 OpenSpec 是否已安裝
+ * @returns {Promise<{installed: boolean, version: string|null}>}
+ */
+export async function checkOpenSpec() {
+  const installed = await commandExists('openspec');
+  const version = installed ? await getCommandVersion('openspec') : null;
+
+  return { installed, version };
+}
+
+/**
  * 檢查所有工具的安裝狀態
  * @returns {Promise<Object>}
  */
 export async function checkAllTools() {
-  const [nvm, node, git, copilot, uv, speckit, claudeCode, geminiCli, codexCli, vscode] = await Promise.all([
+  const [nvm, node, git, copilot, uv, speckit, openspec, claudeCode, geminiCli, codexCli, vscode] = await Promise.all([
     checkNvm(),
     checkNode(),
     checkGit(),
     checkCopilot(),
     checkUv(),
     checkSpecKit(),
+    checkOpenSpec(),
     checkClaudeCode(),
     checkGeminiCli(),
     checkCodexCli(),
@@ -236,6 +248,7 @@ export async function checkAllTools() {
     copilot,
     uv,
     speckit,
+    openspec,
     claudeCode,
     geminiCli,
     codexCli,

@@ -180,6 +180,11 @@ export function displayCheckResults(tools) {
       name: 'Spec Kit',
       data: tools.speckit,
       getStatus: (d) => d.installed ? `✓ 已安裝 ${d.version ? `(${d.version})` : ''}` : '✗ 未安裝'
+    },
+    {
+      name: 'OpenSpec',
+      data: tools.openspec,
+      getStatus: (d) => d.installed ? `✓ 已安裝 ${d.version ? `(${d.version})` : ''}` : '✗ 未安裝'
     }
   ];
 

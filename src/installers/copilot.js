@@ -42,7 +42,7 @@ export function displayCopilotSetupInstructions() {
   console.log(chalk.cyan('   /login\n'));
 
   console.log(chalk.white('3. 切換 AI 模型（選用）：'));
-  console.log(chalk.yellow('   預設使用 Claude Sonnet 4.5'));
+  console.log(chalk.yellow('   預設使用 Claude Sonnet 4.6'));
   console.log(chalk.dim('   也可切換為：Claude Sonnet 4、GPT-5 等'));
   console.log(chalk.cyan('   /model <模型名稱>\n'));
 

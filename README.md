@@ -2,7 +2,7 @@
 
 > 跨平台開發環境快速安裝工具
 
-一鍵安裝常用的開發工具，包括 NVM、Node.js、Git、AI CLI 工具、UV、Spec Kit 和 VSCode。
+一鍵安裝常用的開發工具，包括 NVM、Node.js、Git、AI CLI 工具、UV、Spec Kit、OpenSpec 和 VSCode。
 
 ## 快速開始
 
@@ -69,6 +69,7 @@ specify     # 使用 Spec Kit
   - **OpenAI Codex CLI** - OpenAI 的程式輔助工具
 - **UV** - 快速的 Python 套件管理器（自動管理 Python 版本）
 - **Spec Kit** - GitHub 的規格驅動開發工具（Specify CLI）
+- **OpenSpec** - 規格驅動開發工具（與 Spec Kit 並列可選）
 - **VSCode** - 強大的程式碼編輯器（可選）
 
 ## 使用方式
@@ -92,7 +93,7 @@ npx prespec
    - 選擇 Node.js 版本（LTS 或自訂）
    - 設定 Git 使用者資訊
    - 多選 AI CLI 工具（預設選中 Copilot 和 Gemini）
-   - 安裝 UV 和 Spec Kit（UV 安裝後立即可用，無需重開終端機）
+   - 安裝 UV、Spec Kit 和 OpenSpec（UV 安裝後立即可用，無需重開終端機）
    - 詢問是否安裝 VSCode
 4. **完成提示** - 顯示安裝結果和後續步驟，包含詳細的使用說明
 
@@ -190,6 +191,19 @@ codex  # 啟動後依照指示登入 ChatGPT 帳號
 
 更多資訊請參考：[Spec Kit 文件](https://github.com/github/spec-kit)
 
+### OpenSpec 使用
+
+1. **初始化專案**：
+   ```bash
+   openspec init
+   ```
+
+2. **在 AI 助手中使用**：
+   - `/opsx:propose` - 提出需求變更
+   - `/opsx:apply` - 套用規格到程式碼
+
+更多資訊請參考：[OpenSpec 文件](https://github.com/fission-ai/openspec)
+
 ### 驗證安裝
 
 檢查各工具是否正確安裝：
@@ -200,6 +214,7 @@ git --version
 copilot --version  # 或 claude, gemini, codex（視安裝的工具而定）
 uv --version
 specify --version
+openspec --version
 code --version  # 如果安裝了 VSCode
 ```
 
@@ -259,6 +274,7 @@ prespec/
 │       ├── codex-cli.js   # OpenAI Codex CLI 安裝器
 │       ├── uv.js          # UV 安裝器
 │       ├── speckit.js     # Spec Kit 安裝器
+│       ├── openspec.js    # OpenSpec 安裝器
 │       └── vscode.js      # VSCode 安裝器
 └── package.json
 ```
@@ -273,11 +289,12 @@ MIT License
 - [nvm-windows](https://github.com/coreybutler/nvm-windows)
 - [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli)
-- [Claude Code CLI](https://www.npmjs.com/package/@anthropic-ai/claude-code)
+- [Claude Code CLI](https://code.claude.com/docs/en/setup)
 - [Gemini CLI](https://www.npmjs.com/package/@google/generative-ai-cli)
-- [OpenAI Codex CLI](https://www.npmjs.com/package/openai-codex-cli)
+- [OpenAI Codex CLI](https://www.npmjs.com/package/@openai/codex)
 - [UV](https://docs.astral.sh/uv/)
 - [Spec Kit](https://github.com/github/spec-kit)
+- [OpenSpec](https://github.com/fission-ai/openspec)
 - [VSCode](https://code.visualstudio.com/)
 
 ---

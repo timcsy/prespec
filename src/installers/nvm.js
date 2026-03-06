@@ -51,7 +51,7 @@ export async function installNvm() {
       return true;
     } else {
       // macOS / Linux / WSL: 使用官方安裝腳本
-      const installScript = 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash';
+      const installScript = 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash';
 
       await execa('bash', ['-c', installScript], {
         stdio: 'inherit'
