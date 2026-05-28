@@ -178,12 +178,12 @@ export async function checkClaudeCode() {
 }
 
 /**
- * 檢查 Gemini CLI 是否已安裝
+ * 檢查 Antigravity CLI 是否已安裝（指令為 agy）
  * @returns {Promise<{installed: boolean, version: string|null}>}
  */
-export async function checkGeminiCli() {
-  const installed = await commandExists('gemini');
-  const version = installed ? await getCommandVersion('gemini') : null;
+export async function checkAntigravityCli() {
+  const installed = await commandExists('agy');
+  const version = installed ? await getCommandVersion('agy') : null;
 
   return { installed, version };
 }
@@ -227,7 +227,7 @@ export async function checkOpenSpec() {
  * @returns {Promise<Object>}
  */
 export async function checkAllTools() {
-  const [nvm, node, git, copilot, uv, speckit, openspec, claudeCode, geminiCli, codexCli, vscode] = await Promise.all([
+  const [nvm, node, git, copilot, uv, speckit, openspec, claudeCode, antigravityCli, codexCli, vscode] = await Promise.all([
     checkNvm(),
     checkNode(),
     checkGit(),
@@ -236,7 +236,7 @@ export async function checkAllTools() {
     checkSpecKit(),
     checkOpenSpec(),
     checkClaudeCode(),
-    checkGeminiCli(),
+    checkAntigravityCli(),
     checkCodexCli(),
     checkVSCode()
   ]);
@@ -250,7 +250,7 @@ export async function checkAllTools() {
     speckit,
     openspec,
     claudeCode,
-    geminiCli,
+    antigravityCli,
     codexCli,
     vscode
   };

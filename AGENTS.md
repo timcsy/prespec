@@ -21,7 +21,7 @@
 4. **AI CLI 工具**（多選）：
    - **GitHub Copilot CLI** (`@github/copilot`) - AI 程式設計助手（需要 Node.js v22+、npm v10+、有效的 Copilot 訂閱）
    - **Claude Code CLI** - Anthropic Claude 的終端機介面（使用原生安裝程式）
-   - **Gemini CLI** (`@google/gemini-cli`) - Google Gemini 的終端機介面
+   - **Antigravity CLI** (`agy`) - Google 的終端機 AI 代理（Gemini CLI 官方接班，使用原生安裝程式）
    - **OpenAI Codex CLI** (`@openai/codex`) - OpenAI 的程式輔助工具
 5. **UV** - Python 套件管理器（會自動管理 Python）
 6. **Spec Kit** (Specify CLI) - GitHub 的規格驅動開發工具（透過 uv 從 Git 安裝）
@@ -39,13 +39,14 @@ prespec/
 │   ├── utils/              # 工具函式
 │   │   ├── platform.js     # 平台檢測（macOS/Linux/Windows/WSL）
 │   │   ├── check.js        # 檢查工具是否已安裝
-│   │   └── prompt.js       # 使用者互動介面（inquirer）
+│   │   ├── prompt.js       # 使用者互動介面（inquirer）
+│   │   └── update.js       # npm 系工具的版本比對與更新
 │   └── installers/         # 各工具的安裝器
 │       ├── nvm.js          # NVM 和 Node.js 安裝
 │       ├── git.js          # Git 配置
 │       ├── copilot.js      # GitHub Copilot CLI 安裝
 │       ├── claude-code.js  # Claude Code CLI 安裝（原生安裝程式）
-│       ├── gemini-cli.js   # Gemini CLI 安裝
+│       ├── antigravity-cli.js  # Antigravity CLI 安裝（agy）
 │       ├── codex-cli.js    # OpenAI Codex CLI 安裝
 │       ├── uv.js           # UV 安裝
 │       ├── speckit.js      # Spec Kit 安裝
@@ -76,10 +77,11 @@ prespec/
    - NVM（詢問是否安裝）
    - Node.js（選擇版本）
    - Git（設定使用者資訊）
-   - AI CLI 工具（多選：Copilot、Claude Code、Gemini、Codex）
+   - AI CLI 工具（多選：Copilot、Claude Code、Antigravity、Codex；預設選中 Copilot、Antigravity、Codex）
    - UV
    - Spec Kit
    - OpenSpec
+   - 更新檢查：偵測已安裝的 npm 系工具（Copilot、Codex、OpenSpec）是否有新版本並詢問是否更新
    - VSCode（可選）
 7. 顯示完成訊息和後續步驟
 ```
@@ -103,7 +105,7 @@ prespec/
 - `checkGit()` - 檢查 Git 是否安裝及是否已設定使用者資訊
 - `checkCopilot()` - 檢查 GitHub Copilot CLI
 - `checkClaudeCode()` - 檢查 Claude Code CLI
-- `checkGeminiCli()` - 檢查 Gemini CLI
+- `checkAntigravityCli()` - 檢查 Antigravity CLI（指令 agy）
 - `checkCodexCli()` - 檢查 OpenAI Codex CLI
 - `checkUv()` - 檢查 UV
 - `checkSpecKit()` - 檢查 Spec Kit
@@ -121,13 +123,25 @@ prespec/
 - `askGitUserInfo()` - 輸入 Git 使用者名稱和 email
 - `displayCheckResults()` - 美化顯示檢查結果
 
-#### 5. `src/installers/*` - 安裝器模組
+#### 5. `src/utils/update.js` - npm 系工具更新檢查
+
+負責偵測已安裝的 npm 系工具是否有新版本：
+
+- `NPM_TOOLS` - npm 系工具清單（copilot、codexCli、openspec）
+- `extractSemver()` / `compareSemver()` - 從版本字串擷取並比較 semver
+- `getLatestNpmVersion()` - 透過 `npm view <pkg> version` 查最新版（含 15 秒 timeout，失敗則靜默略過）
+- `checkNpmToolUpdates()` - 比對已安裝版本與最新版，回傳可更新的工具清單
+- `updateNpmTool()` - 執行 `npm install -g <pkg>@latest`
+
+主流程的 `checkAndUpdateNpmTools()`（在 `index.js`）會用多選清單詢問使用者要更新哪些。
+
+#### 6. `src/installers/*` - 安裝器模組
 
 每個安裝器負責特定工具的安裝：
 
 - **nvm.js**：
   - Windows 提示手動安裝 nvm-windows
-  - Unix-like 系統使用官方安裝腳本（v0.40.2）
+  - Unix-like 系統使用官方安裝腳本（v0.40.4）
   - 透過 NVM 安裝 Node.js（支援 LTS 和指定版本）
 
 - **git.js**：
@@ -139,15 +153,18 @@ prespec/
   - 安裝後顯示詳細使用說明
   - 說明啟動方式（`copilot` 指令）
   - 說明首次登入方式（`/login` 指令）
-  - 預設使用 Claude Sonnet 4.6 模型
+  - 預設使用 Claude Sonnet 4.5 模型
 
 - **claude-code.js**：
   - macOS/Linux/WSL：使用 `curl -fsSL https://claude.ai/install.sh | bash`
   - Windows：使用 `irm https://claude.ai/install.ps1 | iex`
   - 使用 `isWindows()` 判斷平台
 
-- **gemini-cli.js**：
-  - 使用 `npm install -g @google/gemini-cli` 安裝
+- **antigravity-cli.js**：
+  - macOS/Linux/WSL：使用 `curl -fsSL https://antigravity.google/cli/install.sh | bash`
+  - Windows：使用 `irm https://antigravity.google/cli/install.ps1 | iex`
+  - 指令名稱為 `agy`，為 Gemini CLI 官方接班
+  - 舊版 Gemini CLI（`@google/gemini-cli`）2026/6/18 起停止為免費／個人帳號服務
 
 - **codex-cli.js**：
   - 使用 `npm install -g @openai/codex` 安裝
@@ -158,7 +175,7 @@ prespec/
   - UV 會自動管理 Python 版本
 
 - **speckit.js**：
-  - 使用 `uv tool install specify-cli --from git+https://github.com/github/spec-kit.git` 安裝
+  - 使用 `uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.8.17` 安裝（釘 release tag）
   - 指令名稱為 `specify`（不是 `spec`）
   - 顯示規格驅動開發的使用說明
   - 說明在 AI 助手中使用 `/speckit.*` 指令
@@ -211,7 +228,7 @@ prespec/
 **重點**：
 - 啟動指令：`copilot`（不是直接輸入問題）
 - 首次使用需要 `/login` 登入
-- 預設模型為 Claude Sonnet 4.6
+- 預設模型為 Claude Sonnet 4.5
 - 需要 Node.js v22+、npm v10+ 和有效的 GitHub Copilot 訂閱
 
 ### 4. Claude Code CLI 安裝方式
@@ -341,7 +358,7 @@ prespec/
 - [nvm-windows](https://github.com/coreybutler/nvm-windows)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli)
 - [Claude Code CLI](https://code.claude.com/docs/en/setup)
-- [Gemini CLI](https://www.npmjs.com/package/@google/gemini-cli)
+- [Antigravity CLI](https://antigravity.google/)
 - [OpenAI Codex CLI](https://www.npmjs.com/package/@openai/codex)
 - [UV](https://docs.astral.sh/uv/)
 - [Spec Kit](https://github.com/github/spec-kit)

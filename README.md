@@ -36,7 +36,7 @@ npx prespec
 
 # 3. 開始使用！
 copilot     # 啟動 GitHub Copilot CLI
-gemini      # 啟動 Gemini CLI
+agy         # 啟動 Antigravity CLI
 claude      # 啟動 Claude Code CLI
 specify     # 使用 Spec Kit
 openspec    # 使用 OpenSpec
@@ -55,6 +55,7 @@ openspec    # 使用 OpenSpec
 - 🚀 **一鍵安裝** - 透過簡單的指令快速設定開發環境
 - 💻 **跨平台支援** - 支援 macOS、Linux 和 Windows
 - 🔍 **智慧檢測** - 自動檢查已安裝的工具，避免重複安裝
+- 🔄 **更新檢查** - 偵測已安裝的 npm 系工具是否有新版本，並詢問是否更新
 - 🎯 **互動式設定** - 友善的互動介面，輕鬆完成設定
 - ⚙️ **彈性配置** - 可選擇要安裝的工具和版本
 
@@ -66,8 +67,8 @@ openspec    # 使用 OpenSpec
 - **AI CLI 工具**（多選）：
   - **GitHub Copilot CLI** - GitHub 的 AI 程式輔助工具（預設安裝）
   - **Claude Code CLI** - Anthropic Claude 的終端機介面
-  - **Gemini CLI** - Google Gemini 的終端機介面（預設安裝）
-  - **OpenAI Codex CLI** - OpenAI 的程式輔助工具
+  - **Antigravity CLI** - Google 的終端機 AI 代理（Gemini CLI 官方接班，指令 `agy`，預設安裝）
+  - **OpenAI Codex CLI** - OpenAI 的程式輔助工具（預設安裝）
 - **UV** - 快速的 Python 套件管理器（自動管理 Python 版本）
 - **Spec Kit** - GitHub 的規格驅動開發工具（Specify CLI）
 - **OpenSpec** - 規格驅動開發工具（與 Spec Kit 並列可選）
@@ -93,10 +94,11 @@ npx prespec
    - 詢問是否安裝 NVM
    - 選擇 Node.js 版本（LTS 或自訂）
    - 設定 Git 使用者資訊
-   - 多選 AI CLI 工具（預設選中 Copilot 和 Gemini）
+   - 多選 AI CLI 工具（預設選中 Copilot、Antigravity 和 Codex）
    - 安裝 UV、Spec Kit 和 OpenSpec（UV 安裝後立即可用，無需重開終端機）
    - 詢問是否安裝 VSCode
-4. **完成提示** - 顯示安裝結果和後續步驟，包含詳細的使用說明
+4. **更新檢查** - 檢查已安裝的 npm 系工具（Copilot、Codex、OpenSpec）是否有新版本，若有則詢問是否更新
+5. **完成提示** - 顯示安裝結果和後續步驟，包含詳細的使用說明
 
 ## 系統需求
 
@@ -163,11 +165,13 @@ source ~/.nvm/nvm.sh
 claude  # 啟動後依照指示登入 Anthropic 帳號
 ```
 
-#### Gemini CLI
+#### Antigravity CLI（Gemini CLI 官方接班）
 
 ```bash
-gemini  # 啟動後依照指示用 Google 帳號認證
+agy  # 啟動後會開啟瀏覽器用 Google 帳號認證
 ```
+
+> ⚠️ 舊版 Gemini CLI（`@google/gemini-cli`）將於 2026/6/18 停止為免費／個人帳號提供服務，個人使用者請改用 Antigravity CLI。
 
 #### OpenAI Codex CLI
 
@@ -212,7 +216,7 @@ codex  # 啟動後依照指示登入 ChatGPT 帳號
 ```bash
 node --version
 git --version
-copilot --version  # 或 claude, gemini, codex（視安裝的工具而定）
+copilot --version  # 或 claude, agy, codex（視安裝的工具而定）
 uv --version
 specify --version
 openspec --version
@@ -270,9 +274,9 @@ prespec/
 │       ├── git.js         # Git 配置器
 │       ├── powershell.js  # PowerShell 升級器
 │       ├── copilot.js     # GitHub Copilot CLI 安裝器
-│       ├── claude-code.js # Claude Code CLI 安裝器
-│       ├── gemini-cli.js  # Gemini CLI 安裝器
-│       ├── codex-cli.js   # OpenAI Codex CLI 安裝器
+│       ├── claude-code.js      # Claude Code CLI 安裝器
+│       ├── antigravity-cli.js  # Antigravity CLI 安裝器（agy）
+│       ├── codex-cli.js        # OpenAI Codex CLI 安裝器
 │       ├── uv.js          # UV 安裝器
 │       ├── speckit.js     # Spec Kit 安裝器
 │       ├── openspec.js    # OpenSpec 安裝器
@@ -291,7 +295,7 @@ MIT License
 - [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows)
 - [GitHub Copilot CLI](https://github.com/github/copilot-cli)
 - [Claude Code CLI](https://code.claude.com/docs/en/setup)
-- [Gemini CLI](https://www.npmjs.com/package/@google/generative-ai-cli)
+- [Antigravity CLI](https://antigravity.google/)
 - [OpenAI Codex CLI](https://www.npmjs.com/package/@openai/codex)
 - [UV](https://docs.astral.sh/uv/)
 - [Spec Kit](https://github.com/github/spec-kit)

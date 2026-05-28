@@ -2,6 +2,10 @@ import { execa } from 'execa';
 import ora from 'ora';
 import chalk from 'chalk';
 
+// 官方建議釘特定 release tag，避免裝到 main 分支的不穩定版本
+// 最新版本請參考 https://github.com/github/spec-kit/releases
+const SPECKIT_VERSION = 'v0.8.17';
+
 /**
  * 安裝 Spec Kit (Specify CLI)
  * @returns {Promise<boolean>}
@@ -10,13 +14,13 @@ export async function installSpecKit() {
   const spinner = ora('正在安裝 Spec Kit (Specify CLI)...').start();
 
   try {
-    // 使用 uv 從 Git 安裝
+    // 使用 uv 從 Git 安裝（釘特定 release tag）
     await execa('uv', [
       'tool',
       'install',
       'specify-cli',
       '--from',
-      'git+https://github.com/github/spec-kit.git'
+      `git+https://github.com/github/spec-kit.git@${SPECKIT_VERSION}`
     ], {
       stdio: 'inherit'
     });
@@ -33,7 +37,7 @@ export async function installSpecKit() {
 
     // 提供備用安裝方法
     console.log(chalk.yellow('\n請嘗試手動安裝 Spec Kit：'));
-    console.log(chalk.cyan('  uv tool install specify-cli --from git+https://github.com/github/spec-kit.git'));
+    console.log(chalk.cyan(`  uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@${SPECKIT_VERSION}`));
     console.log(chalk.blue('\n更多資訊：https://github.com/github/spec-kit\n'));
 
     return false;

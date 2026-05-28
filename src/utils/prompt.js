@@ -164,7 +164,7 @@ export function displayCheckResults(tools) {
         const installed = [];
         if (t.copilot?.installed) installed.push('Copilot');
         if (t.claudeCode?.installed) installed.push('Claude');
-        if (t.geminiCli?.installed) installed.push('Gemini');
+        if (t.antigravityCli?.installed) installed.push('Antigravity');
         if (t.codexCli?.installed) installed.push('Codex');
 
         if (installed.length === 0) return '✗ 未安裝';
@@ -195,7 +195,7 @@ export function displayCheckResults(tools) {
     if (item.name === 'AI CLI 工具') {
       installed = item.data.copilot?.installed ||
                   item.data.claudeCode?.installed ||
-                  item.data.geminiCli?.installed ||
+                  item.data.antigravityCli?.installed ||
                   item.data.codexCli?.installed;
     }
     const color = installed ? chalk.green : chalk.red;

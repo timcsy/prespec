@@ -16,10 +16,11 @@ import { installUv } from './installers/uv.js';
 import { installSpecKit } from './installers/speckit.js';
 import { installOpenSpec } from './installers/openspec.js';
 import { installClaudeCode } from './installers/claude-code.js';
-import { installGeminiCli } from './installers/gemini-cli.js';
+import { installAntigravityCli } from './installers/antigravity-cli.js';
 import { installCodexCli } from './installers/codex-cli.js';
 import { installVSCode } from './installers/vscode.js';
 import { upgradePowerShell, displayPowerShellWarning } from './installers/powershell.js';
+import { checkNpmToolUpdates, updateNpmTool } from './utils/update.js';
 
 /**
  * 主程式
@@ -179,10 +180,10 @@ export async function main() {
       });
     }
 
-    if (!tools.geminiCli.installed) {
+    if (!tools.antigravityCli.installed) {
       aiCliChoices.push({
-        name: 'Gemini CLI - Google Gemini 的終端機介面',
-        value: 'geminiCli',
+        name: 'Antigravity CLI - Google 的終端機 AI 代理（Gemini CLI 的官方接班，指令 agy）',
+        value: 'antigravityCli',
         checked: true
       });
     }
@@ -190,7 +191,8 @@ export async function main() {
     if (!tools.codexCli.installed) {
       aiCliChoices.push({
         name: 'OpenAI Codex CLI - OpenAI 的程式輔助工具',
-        value: 'codexCli'
+        value: 'codexCli',
+        checked: true
       });
     }
 
@@ -213,9 +215,9 @@ export async function main() {
         } else if (tool === 'claudeCode') {
           console.log(chalk.cyan('\n正在安裝 Claude Code CLI...'));
           await installClaudeCode();
-        } else if (tool === 'geminiCli') {
-          console.log(chalk.cyan('\n正在安裝 Gemini CLI...'));
-          await installGeminiCli();
+        } else if (tool === 'antigravityCli') {
+          console.log(chalk.cyan('\n正在安裝 Antigravity CLI...'));
+          await installAntigravityCli();
         } else if (tool === 'codexCli') {
           console.log(chalk.cyan('\n正在安裝 OpenAI Codex CLI...'));
           await installCodexCli();
@@ -253,6 +255,9 @@ export async function main() {
     } else {
       console.log(chalk.blue('⏭  OpenSpec 已安裝，跳過\n'));
     }
+
+    // 5.6. 檢查已安裝的 npm 系工具是否有新版本
+    await checkAndUpdateNpmTools(tools);
 
     // 6. VSCode
     if (!tools.vscode.installed) {
@@ -293,6 +298,53 @@ export async function main() {
 }
 
 /**
+ * 檢查已安裝的 npm 系工具是否有新版本，並詢問是否更新
+ * @param {Object} tools - 工具檢查結果
+ */
+async function checkAndUpdateNpmTools(tools) {
+  console.log(chalk.bold.cyan('\n━━━ 檢查已安裝工具的更新 ━━━\n'));
+  console.log(chalk.yellow('正在向 npm 查詢最新版本...'));
+
+  const updates = await checkNpmToolUpdates(tools);
+
+  if (updates.length === 0) {
+    console.log(chalk.blue('⏭  已安裝的 npm 工具皆為最新版本，無需更新\n'));
+    return;
+  }
+
+  const { selectedUpdates } = await inquirer.prompt([
+    {
+      type: 'checkbox',
+      name: 'selectedUpdates',
+      message: '偵測到以下工具有新版本，請選擇要更新的項目（空白鍵選擇，Enter 確認）：',
+      choices: updates.map((u) => ({
+        name: `${u.name}  ${u.current} → ${u.latest}`,
+        value: u.pkg,
+        checked: true
+      }))
+    }
+  ]);
+
+  if (selectedUpdates.length === 0) {
+    console.log(chalk.dim('跳過工具更新\n'));
+    return;
+  }
+
+  for (const pkg of selectedUpdates) {
+    const tool = updates.find((u) => u.pkg === pkg);
+    console.log(chalk.cyan(`\n正在更新 ${tool.name}（${tool.current} → ${tool.latest}）...`));
+    try {
+      await updateNpmTool(pkg);
+      console.log(chalk.green(`✓ ${tool.name} 更新成功！`));
+    } catch (error) {
+      console.log(chalk.red(`✗ ${tool.name} 更新失敗：${error.message}`));
+      console.log(chalk.yellow(`  請嘗試手動更新：npm install -g ${pkg}@latest`));
+    }
+  }
+  console.log();
+}
+
+/**
  * 顯示後續步驟
  * @param {Object} tools - 工具檢查結果
  */
@@ -312,7 +364,7 @@ function displayNextSteps(tools) {
   const installedAiTools = [];
   if (tools.copilot?.installed) installedAiTools.push('copilot');
   if (tools.claudeCode?.installed) installedAiTools.push('claude');
-  if (tools.geminiCli?.installed) installedAiTools.push('gemini');
+  if (tools.antigravityCli?.installed) installedAiTools.push('agy');
   if (tools.codexCli?.installed) installedAiTools.push('codex');
 
   if (installedAiTools.length > 0) {
@@ -333,11 +385,11 @@ function displayNextSteps(tools) {
       console.log(chalk.white('      首次使用：') + chalk.dim('啟動後依照指示登入 Anthropic 帳號\n'));
     }
 
-    // Gemini CLI
-    if (tools.geminiCli?.installed) {
-      console.log(chalk.white('   📌 Gemini CLI：'));
-      console.log(chalk.cyan('      啟動：') + chalk.yellow('gemini'));
-      console.log(chalk.white('      首次使用：') + chalk.dim('啟動後依照指示用 Google 帳號認證\n'));
+    // Antigravity CLI
+    if (tools.antigravityCli?.installed) {
+      console.log(chalk.white('   📌 Antigravity CLI（Gemini CLI 接班）：'));
+      console.log(chalk.cyan('      啟動：') + chalk.yellow('agy'));
+      console.log(chalk.white('      首次使用：') + chalk.dim('啟動後會開啟瀏覽器用 Google 帳號認證\n'));
     }
 
     // Codex CLI
@@ -381,7 +433,7 @@ function displayNextSteps(tools) {
   const verifyCommands = ['node --version', 'git --version'];
   if (tools.copilot?.installed) verifyCommands.push('copilot --version');
   if (tools.claudeCode?.installed) verifyCommands.push('claude --version');
-  if (tools.geminiCli?.installed) verifyCommands.push('gemini --version');
+  if (tools.antigravityCli?.installed) verifyCommands.push('agy --version');
   if (tools.codexCli?.installed) verifyCommands.push('codex --version');
   if (tools.uv?.installed) verifyCommands.push('uv --version');
   if (tools.speckit?.installed) verifyCommands.push('specify --version');
