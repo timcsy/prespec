@@ -2,6 +2,11 @@
 
 > 跨平台開發環境快速安裝工具
 
+[![npm version](https://img.shields.io/npm/v/prespec.svg)](https://www.npmjs.com/package/prespec)
+[![npm downloads](https://img.shields.io/npm/dm/prespec.svg)](https://www.npmjs.com/package/prespec)
+[![license](https://img.shields.io/npm/l/prespec.svg)](https://github.com/timcsy/prespec/blob/main/LICENSE)
+[![node](https://img.shields.io/node/v/prespec.svg)](https://nodejs.org/)
+
 一鍵安裝常用的開發工具，包括 NVM、Node.js、Git、AI CLI 工具、UV、Spec Kit、OpenSpec 和 VSCode。
 
 ## 快速開始
